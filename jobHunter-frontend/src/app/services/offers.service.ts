@@ -10,7 +10,6 @@ import { HttpClient } from '@angular/common/http';
 export class OffersService {
 
   mock: boolean = true;
-  private mockOffers: Offer[] = [...OFFERS];
   private offersSubject: BehaviorSubject<Offer[]> = new BehaviorSubject<Offer[]>([...OFFERS]);
   offers$: Observable<Offer[]> = this.offersSubject.asObservable();
 
@@ -18,6 +17,7 @@ export class OffersService {
   }
 
   fetchOffers() {
+    this.offersSubject.next([...OFFERS]);
     // si mock = true
     //    agafa les ofertes mock i les desa com a offerSubject
     // si mock = false ---->
