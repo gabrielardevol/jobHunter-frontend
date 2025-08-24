@@ -1,0 +1,72 @@
+import { Offer } from "../models/models";
+
+export const OFFERS: Offer[] = [
+  {
+    company: 'TechCorp',
+    role: 'frontend',
+    hired: false,
+    location: 'Barcelona',
+    recruiter: 'Maria Lopez',
+    status: 'waiting',
+    platform: 'LinkedIn',
+    skills: ['Angular', 'TypeScript', 'CSS'],
+    perHoursMinimum: 20,
+    perHoursMaximum: 30,
+    weeklyHours: 40,
+    durationMonths: 6,
+    experienceMinimum: 2,
+    experienceMaximum: 4,
+    createdAt: new Date('2025-01-10')
+  },
+  {
+    company: 'DataSoft',
+    role: 'backend',
+    hired: false,
+    location: 'Remote',
+    recruiter: 'John Doe',
+    status: 'onProcess',
+    platform: 'Indeed',
+    skills: ['Node.js', 'Express', 'PostgreSQL'],
+    perHoursMinimum: 25,
+    perHoursMaximum: 35,
+    weeklyHours: 30,
+    durationMonths: 12,
+    experienceMinimum: 3,
+    experienceMaximum: 5,
+    createdAt: new Date('2025-02-02')
+  },
+  {
+    company: 'Global Solutions',
+    role: 'fullstack',
+    hired: true,
+    location: 'Madrid',
+    recruiter: 'Ana Garcia',
+    status: 'contract',
+    platform: 'Glassdoor',
+    skills: ['React', 'Node.js', 'MongoDB'],
+    perHoursMinimum: 30,
+    perHoursMaximum: 45,
+    weeklyHours: 40,
+    durationMonths: undefined,
+    experienceMinimum: 5,
+    experienceMaximum: 8,
+    createdAt: new Date('2024-12-15')
+  },
+  {
+    company: 'StartUpX',
+    role: 'others',
+    hired: false,
+    location: 'Remote',
+    recruiter: 'Pedro Alvarez',
+    status: 'rejected',
+    platform: 'Jobandtalent',
+    skills: ['Python', 'Django', 'AWS'],
+    perHoursMinimum: 15,
+    perHoursMaximum: 25,
+    weeklyHours: 20,
+    durationMonths: 3,
+    experienceMinimum: 1,
+    experienceMaximum: 2,
+    createdAt: new Date('2025-03-05')
+  }
+];

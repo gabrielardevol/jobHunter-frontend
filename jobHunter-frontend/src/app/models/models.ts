@@ -14,7 +14,7 @@ export interface Offer {
     perHoursMinimum: number,
     perHoursMaximum: number,
     weeklyHours: number,
-    duration: number | undefined,
+    durationMonths: number | undefined,
     experienceMinimum: number,
     experienceMaximum: number,
     createdAt: Date
