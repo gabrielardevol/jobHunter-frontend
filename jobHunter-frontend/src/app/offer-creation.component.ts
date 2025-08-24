@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
-import { OffersService } from '../services/offers.service';
+import { OffersService } from './services/offers.service';
 
 @Component({
   selector: 'app-offer-creation',
@@ -41,7 +41,7 @@ export class OfferCreationComponent {
   constructor(private fb: FormBuilder, public offersService: OffersService) {
     this.offerForm = this.fb.group({
       company: ['', Validators.required],
-      role: ['frontend', Validators.required],
+      role: ['', Validators.required],
       location: [''],
       recruiter: [''],
       status: ['waiting'],

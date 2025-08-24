@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { OffersComponent } from './offers.component';
-import { OfferCreationComponent } from "./offer-creation/offer-creation.component";
+import { OfferCreationComponent } from "./offer-creation.component";
 
 @Component({
   selector: 'app-root',
