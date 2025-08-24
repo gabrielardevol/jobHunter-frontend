@@ -13,7 +13,8 @@ export class OffersService {
   private offersSubject: BehaviorSubject<Offer[]> = new BehaviorSubject<Offer[]>([...OFFERS]);
   offers$: Observable<Offer[]> = this.offersSubject.asObservable();
 
-  constructor(private http: HttpClient) {
+  constructor() {
+    this.fetchOffers;
   }
 
   fetchOffers() {
