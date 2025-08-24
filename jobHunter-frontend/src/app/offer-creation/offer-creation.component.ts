@@ -12,13 +12,11 @@ import { OffersService } from '../services/offers.service';
  <input formControlName="company" placeholder="Company" />
   
   <select formControlName="role">
-    <option *ngFor="let role of roles" [value]="role">{{ role }}</option>
+    <option value="frontend">frontend</option>
+    <option value="backend">backend</option>
+    <option value="fullstack">fullstack</option>
+    <option value="others">others</option>
   </select>
-  
-  <label>
-    Hired:
-    <input type="checkbox" formControlName="hired" />
-  </label>
   
   <input formControlName="location" placeholder="Location" />
   <input formControlName="recruiter" placeholder="Recruiter" />
@@ -32,7 +30,7 @@ import { OffersService } from '../services/offers.service';
   <input formControlName="experienceMinimum" type="number" placeholder="Min experience" />
   <input formControlName="experienceMaximum" type="number" placeholder="Max experience" />
 
-  <button type="submit">Create Offer</button>
+  <button [disabled]="!offerForm.valid" type="submit">Create Offer</button>
     </form>
   `,
   styles: ``
@@ -43,7 +41,7 @@ export class OfferCreationComponent {
   constructor(private fb: FormBuilder, public offersService: OffersService) {
     this.offerForm = this.fb.group({
       company: ['', Validators.required],
-      role: ['', Validators.required],
+      role: ['frontend', Validators.required],
       location: [''],
       recruiter: [''],
       status: ['waiting'],

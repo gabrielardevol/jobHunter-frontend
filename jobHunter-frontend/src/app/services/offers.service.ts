@@ -28,7 +28,6 @@ export class OffersService {
   }
 
   addOffer(offer: Offer) {
-    console.log("addOffer, ", offer)
     const currentOffers = this.offersSubject.value;
     this.offersSubject.next([...currentOffers, offer]);
     // si mock = false ------------
