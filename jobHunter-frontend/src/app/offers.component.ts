@@ -7,9 +7,6 @@ import { AsyncPipe } from "@angular/common";
   selector: 'app-offers',
   imports: [NgForOf, AsyncPipe],
   template: `
-    <p>
-      offers works!
-    </p>
     <div  *ngFor="let offer of offersService.offers$ | async">
       {{offer.company}}
       {{offer.role}}
