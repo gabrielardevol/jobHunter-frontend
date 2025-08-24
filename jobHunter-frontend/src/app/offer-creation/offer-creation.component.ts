@@ -8,7 +8,7 @@ import { OffersService } from '../services/offers.service';
   imports: [ReactiveFormsModule ],
   template: `
  
-    <form [formGroup]="offerForm" (ngSubmit)="offersService.addOffer(offerForm.value)"> 
+    <form [formGroup]="offerForm" (ngSubmit)="offersService.addOffer(offerForm.value); offerForm.reset()"> 
  <input formControlName="company" placeholder="Company" />
   
   <select formControlName="role">
@@ -44,10 +44,9 @@ export class OfferCreationComponent {
     this.offerForm = this.fb.group({
       company: ['', Validators.required],
       role: ['', Validators.required],
-      hired: [false],
       location: [''],
       recruiter: [''],
-      status: [''],
+      status: ['waiting'],
       platform: [''],
       skills: this.fb.array([]),
       perHoursMinimum: [0, Validators.min(0)],
