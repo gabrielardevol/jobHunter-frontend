@@ -13,7 +13,7 @@ import { combineLatest, map, Observable, startWith } from 'rxjs';
 
     <select [formControl]="sortByControl">
       <option [ngValue]="'company'">Company</option>
-      <option [ngValue]="'createdAt'">Created At</option>
+      <option [ngValue]="'createdAt'">Date</option>
       <option [ngValue]="'salaryMax'">Salary Max</option>
     </select>
 
@@ -29,6 +29,8 @@ import { combineLatest, map, Observable, startWith } from 'rxjs';
     </select>
 
     <input type="text" [formControl]="searchControl" placeholder="Search offers..." />
+
+    <button (click)="sortByControl.setValue(undefined); filterByStatusControl.setValue('all'); searchControl.setValue('')">clear filters</button>
 
     <div  *ngFor="let offer of filteredOffers$ | async" >
       {{offer.company}}
@@ -49,7 +51,7 @@ export class OffersComponent {
   @Output() updatingOffer = new EventEmitter<string>;
   @Output() deletedOffer = new EventEmitter<string>;
   @Output() viewingOffer = new EventEmitter<Offer>;
-  sortByControl = new FormControl<undefined | 'company' | 'createdAt' | 'salaryMax'>(undefined);
+  sortByControl = new FormControl<undefined | 'company' | 'createdAt' | 'salaryMax'>('createdAt');
   filterByStatusControl = new FormControl<'waiting' | 'expired' | 'rejected' | 'onProcess' | 'contract' | 'dumped' | 'all'>('all');
   searchControl = new FormControl('');
   filteredOffers$: Observable<Offer[]>;
