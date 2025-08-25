@@ -11,7 +11,8 @@ export class LlmService {
     constructor() {
     }
     
-    promptOffer() {
+    promptOffer(offerText: string) {
+        console.log(offerText)
     }
     
     promptResponse() {

@@ -1,13 +1,16 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 import { OffersService } from './services/offers.service';
+import { debounceTime, Observable } from 'rxjs';
+import { LlmService } from './services/llm.service';
 
 @Component({
   selector: 'app-offer-creation',
   imports: [ReactiveFormsModule ],
   template: `
- 
+     <input [formControl]="llmControl" placeholder="Type something..." />
+
     <form [formGroup]="offerForm" (ngSubmit)="offersService.addOffer(offerForm.value); offerForm.reset()"> 
  <input formControlName="company" placeholder="Company" />
   
@@ -37,8 +40,12 @@ import { OffersService } from './services/offers.service';
 })
 export class OfferCreationComponent {
   offerForm: FormGroup;
-
-  constructor(private fb: FormBuilder, public offersService: OffersService) {
+  llmControl: FormControl = new FormControl;
+  textSource$: Observable<string> = this.llmControl.valueChanges.pipe(
+    debounceTime(1000),
+  );
+  
+  constructor(private fb: FormBuilder, public offersService: OffersService, public llmService: LlmService) {
     this.offerForm = this.fb.group({
       company: ['', Validators.required],
       role: ['', Validators.required],
@@ -55,6 +62,10 @@ export class OfferCreationComponent {
       experienceMaximum: [0, Validators.min(0)],
       createdAt: [new Date()]
     });
+
+    this.textSource$.subscribe(response => {
+        this.llmService.promptOffer(response)
+    })
    }
 
   ngOnInit(): void {
