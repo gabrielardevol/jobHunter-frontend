@@ -12,7 +12,6 @@
   <main>
 
     <app-offer-form [offerId]="updatingOffer"></app-offer-form>
-    {{viewingOffer?.company}}
     <app-offer-detail *ngIf="viewingOffer" [offer]="viewingOffer"></app-offer-detail>
     <router-outlet></router-outlet>
     <app-offers 
