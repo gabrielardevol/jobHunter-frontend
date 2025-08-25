@@ -31,6 +31,7 @@ import { CommonModule } from '@angular/common';
       
       <input formControlName="location" placeholder="Location" />
       <input formControlName="recruiter" placeholder="Recruiter" />
+      <input formControlName="skills" placeholder="Skills" />
       <input formControlName="platform" placeholder="Platform" />
       <input formControlName="perHoursMinimum" type="number" placeholder="Min per hour" />
       <input formControlName="perHoursMaximum" type="number" placeholder="Max per hour" />
