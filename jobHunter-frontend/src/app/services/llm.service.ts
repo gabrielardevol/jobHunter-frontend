@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, of } from 'rxjs';
+import { BehaviorSubject, map, Observable, of, tap } from 'rxjs';
 import { Offer } from '../models/models';
 import { environment } from '../../environments/environment';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
@@ -15,26 +15,52 @@ export class LlmService {
   });
 
   body = {
-    model: 'llama-3.3-70b-versatile',
-    messages: [
-      {
-        role: 'system',
-        content: `Return object of type to be parsed, based on text source. All fields are nullable. Return only object, starting and ending with a curly brace, ready to be parsed. Type is:`
-      },
-    ],
+    model: environment.llmModel,
+    messages: [{ role: 'system', content: '' },],
     temperature: 0.7,
     max_tokens: 1000,
   };
 
-
   constructor(public httpClient: HttpClient) {
   }
   
-  promptOffer(offerText: string) {
-       const headers = this.headers;
-    const body = this.body;
-    body.messages[0].content = body.messages[0].content + `
-     company: string,
+  promptOffer(offerText: string):  Observable<Partial<Offer>> {
+    const headers = this.headers;
+    const body = {
+      ...this.body,
+      messages: [{
+        ...this.body.messages[0],
+        content: this.bodyContentBase + this.offerInterface
+        + `. Text source is:` 
+        + offerText 
+        + `. An example of desired output is: ` 
+        + this.offerExample
+        }
+      ]
+    } 
+    return this.httpClient.post<any>(environment.apiUrl, 
+    body, 
+    { headers }
+    ).pipe(
+//      tap(response => console.log('server response:', response.choices[0].message.content)),
+      tap(response => console.log('server response regex:', response.choices[0].message.content.match(/{[\s\S]*}/))),
+      map(response => JSON.parse(response.choices[0].message.content.match(/{[\s\S]*}/))))
+  }
+  
+  promptResponse() {
+   
+  }
+  
+  bodyContentBase: string = `
+    Return object of type to be parsed, based on text source. 
+    All fields are nullable. 
+    Return only object, starting and ending with a curly brace, ready to be parsed. 
+    No extra comments, only object. 
+    Type is:
+    `
+
+  offerInterface: string = `{
+    company: string,
     role: tRole,
     hired?: boolean,
     location?: string,
@@ -48,19 +74,24 @@ export class LlmService {
     durationMonths?: number | undefined,
     experienceMinimum?: number,
     experienceMaximum?: number,
-    createdAt: Date,
-    ` + `
-    . Text source is:
-    ` + offerText
+  }` 
 
-    return this.httpClient.post<any>(environment.apiUrl, 
-    body, 
-    { headers }
-    ).subscribe(response => console.log(response.choices[0].message.content))
-  }
-  
-  promptResponse() {
-   
-  }
+  offerExample: string = `
+  {
+      "company": "ACME",
+      "role": "frontend",
+      "hired": false,
+      "location": null,
+      "recruiter": null,
+      "status": null,
+      "platform": null,
+      "skills": null,
+      "perHoursMinimum": 11.51,
+      "perHoursMaximum": 11.51,
+      "weeklyHours": 40,
+      "durationMonths": null,
+      "experienceMinimum": null,
+      "experienceMaximum": null,
+    }`
   
 }

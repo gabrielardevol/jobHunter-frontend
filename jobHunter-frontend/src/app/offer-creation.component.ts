@@ -1,42 +1,44 @@
-import { Component } from '@angular/core';
+import { Component, DestroyRef } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 import { OffersService } from './services/offers.service';
-import { debounceTime, Observable } from 'rxjs';
+import { debounceTime, Observable, switchMap, tap } from 'rxjs';
 import { LlmService } from './services/llm.service';
 import { v4 as uuidv4 } from 'uuid';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-offer-creation',
   imports: [ReactiveFormsModule ],
   template: `
-     <input [formControl]="llmControl" placeholder="Type something..." />
+    <input [formControl]="llmControl" placeholder="Type something..." />
 
     <form [formGroup]="offerForm" (ngSubmit)="offersService.addOffer(offerForm.value); offerForm.reset()"> 
- <input formControlName="company" placeholder="Company" />
-  
-  <select formControlName="role">
-    <option value="frontend">frontend</option>
-    <option value="backend">backend</option>
-    <option value="fullstack">fullstack</option>
-    <option value="others">others</option>
-  </select>
-  
-  <input formControlName="location" placeholder="Location" />
-  <input formControlName="recruiter" placeholder="Recruiter" />
+      <input formControlName="company" placeholder="Company" />
+    
+      <select formControlName="role">
+        <option value="frontend">frontend</option>
+        <option value="backend">backend</option>
+        <option value="fullstack">fullstack</option>
+        <option value="others">others</option>
+      </select>
+      
+      <input formControlName="location" placeholder="Location" />
+      <input formControlName="recruiter" placeholder="Recruiter" />
 
-  <input formControlName="platform" placeholder="Platform" />
+      <input formControlName="platform" placeholder="Platform" />
 
-  <input formControlName="perHoursMinimum" type="number" placeholder="Min per hour" />
-  <input formControlName="perHoursMaximum" type="number" placeholder="Max per hour" />
-  <input formControlName="weeklyHours" type="number" placeholder="Weekly hours" />
-  <input formControlName="duration" type="number" placeholder="Duration in months" />
-  <input formControlName="experienceMinimum" type="number" placeholder="Min experience" />
-  <input formControlName="experienceMaximum" type="number" placeholder="Max experience" />
+      <input formControlName="perHoursMinimum" type="number" placeholder="Min per hour" />
+      <input formControlName="perHoursMaximum" type="number" placeholder="Max per hour" />
+      <input formControlName="weeklyHours" type="number" placeholder="Weekly hours" />
+      <input formControlName="duration" type="number" placeholder="Duration in months" />
+      <input formControlName="experienceMinimum" type="number" placeholder="Min experience" />
+      <input formControlName="experienceMaximum" type="number" placeholder="Max experience" />
 
-  <button [disabled]="!offerForm.valid" type="submit">Create Offer</button>
+      <button [disabled]="!offerForm.valid" type="submit">Create Offer</button>
     </form>
   `,
+
   styles: ``
 })
 export class OfferCreationComponent {
@@ -44,9 +46,10 @@ export class OfferCreationComponent {
   llmControl: FormControl = new FormControl;
   textSource$: Observable<string> = this.llmControl.valueChanges.pipe(
     debounceTime(1000),
+    tap(value => console.log('Valor actual del control:', value))
   );
   
-  constructor(private fb: FormBuilder, public offersService: OffersService, public llmService: LlmService) {
+  constructor(private fb: FormBuilder, public offersService: OffersService, public llmService: LlmService, private destroyRef: DestroyRef) {
     this.offerForm = this.fb.group({
       id: [uuidv4()],
       company: ['', Validators.required],
@@ -64,16 +67,16 @@ export class OfferCreationComponent {
       experienceMaximum: [0, Validators.min(0)],
       createdAt: [new Date()]
     });
-
-    this.textSource$.subscribe(response => {
-        this.llmService.promptOffer(response)
-        //must subscribe to promptOffer
-        //must cast response when received
-    })
    }
 
   ngOnInit(): void {
-    
+     this.textSource$
+    .pipe(
+      switchMap(text => this.llmService.promptOffer(text)),
+      tap(value => console.log('Valor actual del control:', value)),
+      takeUntilDestroyed(this.destroyRef)
+    )
+    .subscribe(parsed => this.offerForm.patchValue(parsed));
   }
 
 }
