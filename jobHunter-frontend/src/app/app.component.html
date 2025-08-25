@@ -12,12 +12,14 @@
   <main>
 
     <app-offer-form [offerId]="updatingOffer"></app-offer-form>
-    <app-offer-detail *ngIf="viewingOffer" [offer]="viewingOffer"></app-offer-detail>
+    <app-offer-detail *ngIf="viewingOffer" 
+        [offer]="viewingOffer"
+        (updatingOffer)="updatingOffer = $event" 
+        (deletedOffer)="offersService.deleteOffer($event)"/>
     <router-outlet></router-outlet>
     <app-offers 
-      (updatingOffer)="updatingOffer = $event" 
+        (updatingOffer)="updatingOffer = $event" 
         (viewingOffer)="viewingOffer = $event"
-      (deletedOffer)="offersService.deleteOffer($event)">
-    </app-offers>
+        (deletedOffer)="offersService.deleteOffer($event)"/>
   </main>
 </div> 
