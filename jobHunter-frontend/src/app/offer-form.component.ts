@@ -33,6 +33,12 @@ import { CommonModule } from '@angular/common';
       <input formControlName="recruiter" placeholder="Recruiter" />
       <input formControlName="skills" placeholder="Skills" />
       <input formControlName="platform" placeholder="Platform" />
+      <select formControlName="paymentType">
+        <option value="month">month</option>
+        <option value="hour">hour</option>
+        <option value="year">year</option>
+        <option value="day">day</option>
+      </select>
       <input formControlName="salaryMinimum" type="number" placeholder="Min per hour" />
       <input formControlName="salaryMaximum" type="number" placeholder="Max per hour" />
       <input formControlName="weeklyHours" type="number" placeholder="Weekly hours" />
@@ -61,21 +67,19 @@ export class OfferFormComponent {
   constructor(private fb: FormBuilder, public offersService: OffersService, public llmService: LlmService, private destroyRef: DestroyRef) {
 //    console.log('offerId from offer-form', this.offerId);
     this.offerForm = this.fb.group({
-      id: [uuidv4()],
       company: ['', Validators.required],
       role: ['', Validators.required],
       location: [''],
       recruiter: [''],
-      status: ['waiting'], //move to business logic
       platform: [''],
-      skills: this.fb.array([]),
+      skills: [''],
+      paymentType: ['month'],
       salaryMinimum: [0, Validators.min(0)],
       salaryMaximum: [0, Validators.min(0)],
       weeklyHours: [0, Validators.min(0)],
       duration: [undefined],
       experienceMinimum: [0, Validators.min(0)],
       experienceMaximum: [0, Validators.min(0)],
-      createdAt: [new Date()]
     });
   }
 

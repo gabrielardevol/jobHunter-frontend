@@ -67,6 +67,9 @@ export class OffersService {
 
   addOffer(offer: Offer) {
     offer.id = uuidv4();
+    offer.createdAt = new Date();
+    offer.status = "waiting";
+    
     const currentOffers = this.offersSubject.value;
     this.offersSubject.next([...currentOffers, offer]);
 
