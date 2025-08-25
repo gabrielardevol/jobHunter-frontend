@@ -65,6 +65,8 @@ export class OfferCreationComponent {
 
     this.textSource$.subscribe(response => {
         this.llmService.promptOffer(response)
+        //must subscribe to promptOffer
+        //must cast response when received
     })
    }
 

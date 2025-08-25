@@ -13,6 +13,7 @@ export class LlmService {
     
     promptOffer(offerText: string) {
         console.log(offerText)
+        //must return an observable
     }
     
     promptResponse() {

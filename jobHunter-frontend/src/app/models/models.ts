@@ -3,6 +3,7 @@ type tStatus = 'waiting' | 'expired' | 'rejected' | 'onProcess' | 'contract' | '
 type tRole = 'frontend' | 'backend' | 'fullstack' | 'others'
 
 export interface Offer {
+    id: string,
     company: string,
     role: tRole,
     hired?: boolean,
@@ -21,17 +22,20 @@ export interface Offer {
 }
 
 export interface Response {
+    id: string,
     type: tResponseType,
     date: Date | undefined,
     createdAt: Date
 }
 
 export interface TextSource {
+    id: string,
     content: string,
     createdAt: Date
 }
 
 export interface User {
+    id: string,
     email: string,
     skills: string[],
     password: string,
@@ -39,11 +43,13 @@ export interface User {
 }
 
 export interface Comment {
+    id: string,
     createdAt: Date,
     content: string
 }
 
 export interface WorkingExperience {
+    id: string,
     company: string,
     startDate: Date,
     endDate: Date,
