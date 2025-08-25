@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, map, Observable, of } from 'rxjs';
 import { Offer } from '../models/models';
 import { OFFERS } from '../mocks/offers.mock';
-import { HttpClient } from '@angular/common/http';
 import { v4 as uuidv4 } from 'uuid';
 import { environment } from '../../environments/environment.development';
 @Injectable({

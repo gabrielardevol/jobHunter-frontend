@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { OffersComponent } from './offers.component';
+import { OffersPage } from './offers.page';
 import { OfferFormComponent } from "./offer-form.component";
 import { OffersService } from './services/offers.service';
 import { OfferDetailComponent } from "./offer-detail.component";
@@ -9,7 +9,7 @@ import { Offer } from './models/models';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, OffersComponent, OfferFormComponent, OfferDetailComponent, NgIf],
+  imports: [RouterOutlet, OffersPage, OfferFormComponent, OfferDetailComponent, NgIf],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })

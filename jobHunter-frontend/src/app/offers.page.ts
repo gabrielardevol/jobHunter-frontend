@@ -46,7 +46,7 @@ import { combineLatest, map, Observable, startWith } from 'rxjs';
   `,
   styles: ``
 })
-export class OffersComponent {
+export class OffersPage {
   @Output() updatingOffer = new EventEmitter<string>;
   @Output() deletedOffer = new EventEmitter<string>;
   @Output() viewingOffer = new EventEmitter<Offer>;
