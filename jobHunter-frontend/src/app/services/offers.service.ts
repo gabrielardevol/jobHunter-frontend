@@ -12,7 +12,7 @@ export class OffersService {
   mock: boolean = false;
   private offersSubject: BehaviorSubject<Offer[]> = new BehaviorSubject<Offer[]>([]);
   offers$: Observable<Offer[]> = this.offersSubject.asObservable();
-  private db: IDBDatabase | null = null; //modifciar; que sigui la store en aquest scope
+  private db: IDBDatabase | null = null;
 
   constructor() {
     this.mock ? this.fetchOffers() : this.openIDBAndFetch();
@@ -43,7 +43,7 @@ export class OffersService {
     if (this.mock) this.offersSubject.next([...OFFERS]);
 
     if (!this.db) return;
-    
+
     const tx = this.db.transaction('offers', 'readwrite');
     const store = tx.objectStore('offers');
     const getAllRequest = store.getAll();

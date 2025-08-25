@@ -60,6 +60,7 @@ export class LlmService {
     `
 
   offerInterface: string = `{
+    id: string,
     company: string,
     role: tRole,
     hired?: boolean,
@@ -68,12 +69,18 @@ export class LlmService {
     status: tStatus,
     platform?: string,
     skills?: string[],
-    perHoursMinimum?: number,
-    perHoursMaximum?: number,
+    paymentType: 'month' | 'hour' | 'year' | 'day',
+    salaryMinimum?: number,
+    salaryMaximum?: number,
     weeklyHours?: number,
     durationMonths?: number | undefined,
     experienceMinimum?: number,
     experienceMaximum?: number,
+    createdAt: Date,
+    responses?: Response[],
+    textSource?: TextSource,
+    comments?: Comment[],
+    user?: User,
   }` 
 
   offerExample: string = `
@@ -86,8 +93,9 @@ export class LlmService {
       "status": null,
       "platform": null,
       "skills": null,
-      "perHoursMinimum": 11.51,
-      "perHoursMaximum": 11.51,
+      "paymentType": "hour",
+      "salaryMinimum": 11.51,
+      "salaryMaximum": 11.51,
       "weeklyHours": 40,
       "durationMonths": null,
       "experienceMinimum": null,

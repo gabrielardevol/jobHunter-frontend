@@ -1,6 +1,6 @@
-type tResponseType = 'interview' | 'assignment' | 'contract' | 'rejection'
-type tStatus = 'waiting' | 'expired' | 'rejected' | 'onProcess' | 'contract' | 'dumped'
-type tRole = 'frontend' | 'backend' | 'fullstack' | 'others'
+export type tResponseType = 'interview' | 'assignment' | 'contract' | 'rejection'
+export type tStatus = 'waiting' | 'expired' | 'rejected' | 'onProcess' | 'contract' | 'dumped'
+export type tRole = 'frontend' | 'backend' | 'fullstack' | 'others'
 
 export interface Offer {
     id: string,
@@ -12,8 +12,9 @@ export interface Offer {
     status: tStatus,
     platform?: string,
     skills?: string[],
-    perHoursMinimum?: number,
-    perHoursMaximum?: number,
+    paymentType: 'month' | 'hour' | 'year' | 'day',
+    salaryMinimum?: number,
+    salaryMaximum?: number,
     weeklyHours?: number,
     durationMonths?: number | undefined,
     experienceMinimum?: number,
