@@ -54,7 +54,10 @@ export class OffersService {
     // si no, actualitza la oferta a indexedDB
   }
 
-  deleteOffer(index: number) {
+  deleteOffer(id: string) {
+    const current = this.offersSubject.value;
+    const updated = current.filter(offer => offer.id !== id);
+    this.offersSubject.next(updated);
     //actualitza la oferta al behaviourSubject
     // si mock = false ------------
     //si està autenticat, actualitza la oferta al backend

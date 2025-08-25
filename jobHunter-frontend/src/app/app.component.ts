@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { OffersComponent } from './offers.component';
 import { OfferFormComponent } from "./offer-form.component";
+import { OffersService } from './services/offers.service';
 
 @Component({
   selector: 'app-root',
@@ -12,4 +13,5 @@ import { OfferFormComponent } from "./offer-form.component";
 export class AppComponent {
   title = 'jobHunter-frontend';
   selectedOffer: string | undefined = undefined;
+  constructor(public offersService: OffersService){}
 }

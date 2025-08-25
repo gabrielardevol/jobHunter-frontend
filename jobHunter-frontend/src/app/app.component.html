@@ -12,6 +12,9 @@
   <main>
     <app-offer-form [offerId]="selectedOffer"></app-offer-form>
     <router-outlet></router-outlet>
-    <app-offers (selectedOffer)="selectedOffer = $event"></app-offers>
+    <app-offers 
+      (selectedOffer)="selectedOffer = $event" 
+      (deletedOffer)="offersService.deleteOffer($event)">
+    </app-offers>
   </main>
 </div>

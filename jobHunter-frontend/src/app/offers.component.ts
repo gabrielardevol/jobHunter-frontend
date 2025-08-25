@@ -7,12 +7,13 @@ import { AsyncPipe } from "@angular/common";
   selector: 'app-offers',
   imports: [NgForOf, AsyncPipe],
   template: `
-    <div  *ngFor="let offer of offersService.offers$ | async"
-    (click)="this.selectedOffer.emit(offer.id)">
+    <div  *ngFor="let offer of offersService.offers$ | async">
       {{offer.company}}
       {{offer.role}}
       {{offer.recruiter}}
       {{offer.skills}}
+      <button (click)="this.selectedOffer.emit(offer.id)">update</button>
+      <button (click)="this.deletedOffer.emit(offer.id)">delete</button>
       <hr>
     </div>
 
@@ -21,6 +22,8 @@ import { AsyncPipe } from "@angular/common";
 })
 export class OffersComponent {
   @Output() selectedOffer = new EventEmitter<string>;
+  @Output() deletedOffer = new EventEmitter<string>;
+
   constructor(public offersService: OffersService) {
 
   }
