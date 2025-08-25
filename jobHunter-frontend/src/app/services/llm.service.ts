@@ -19,7 +19,7 @@ export class LlmService {
     messages: [
       {
         role: 'system',
-        content: `Return object of type`
+        content: `Return object of type to be parsed, based on text source. All fields are nullable. Return only object, starting and ending with a curly brace, ready to be parsed. Type is:`
       },
     ],
     temperature: 0.7,
@@ -31,9 +31,6 @@ export class LlmService {
   }
   
   promptOffer(offerText: string) {
-      console.log(offerText)
-      console.log(environment.apiSecret , environment.apiUrl)
-
        const headers = this.headers;
     const body = this.body;
     body.messages[0].content = body.messages[0].content + `
@@ -52,13 +49,14 @@ export class LlmService {
     experienceMinimum?: number,
     experienceMaximum?: number,
     createdAt: Date,
-    ` 
+    ` + `
+    . Text source is:
+    ` + offerText
 
     return this.httpClient.post<any>(environment.apiUrl, 
-    { body }, 
+    body, 
     { headers }
-    ).subscribe(response => console.log(response))
-      //must return an observable
+    ).subscribe(response => console.log(response.choices[0].message.content))
   }
   
   promptResponse() {
