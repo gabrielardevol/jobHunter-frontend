@@ -63,3 +63,9 @@ export interface WorkingExperience {
     endDate: Date,
     salaryPerYear: number
 }
+
+export interface Snackbar {
+    id: string,
+    message: string,
+    action: () => void,
+}

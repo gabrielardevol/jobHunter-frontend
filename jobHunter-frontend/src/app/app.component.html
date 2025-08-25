@@ -13,7 +13,12 @@
 
     <app-offer-form></app-offer-form>
     <hr>
-    <app-offer-detail  *ngIf="globalStateStore.viewingOffer$ | async as offer" />
+    <app-offer-detail  *ngIf="globalStateStore.viewingOffer$ | async as offer"/>
     <router-outlet></router-outlet>
+    <button (click)="showTestSnackbar()">create snackbar</button>
+  <div *ngFor="let snack of snackbarService.snackbars$ | async">
+  <span>{{ snack.message }}</span>
+  <button *ngIf="snack.action" (click)="snack.action()">Action</button>
+</div>
   </main>
 </div> 
