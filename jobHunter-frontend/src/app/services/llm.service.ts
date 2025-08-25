@@ -85,21 +85,21 @@ export class LlmService {
 
   offerExample: string = `
   {
-      "company": "ACME",
-      "role": "frontend",
-      "hired": false,
-      "location": null,
-      "recruiter": null,
-      "status": null,
-      "platform": null,
-      "skills": null,
-      "paymentType": "hour",
-      "salaryMinimum": 11.51,
-      "salaryMaximum": 11.51,
-      "weeklyHours": 40,
-      "durationMonths": null,
-      "experienceMinimum": null,
-      "experienceMaximum": null,
-    }`
+    "company": "ACME",
+    "role": "frontend",
+    "hired": false,
+    "location": null,
+    "recruiter": null,
+    "status": null,
+    "platform": null,
+    "skills": null,
+    "paymentType": "hour",
+    "salaryMinimum": 11.51,
+    "salaryMaximum": 11.51,
+    "weeklyHours": 40,
+    "durationMonths": null,
+    "experienceMinimum": null,
+    "experienceMaximum": null,
+  }`
   
 }
