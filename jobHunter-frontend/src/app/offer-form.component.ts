@@ -33,8 +33,8 @@ import { CommonModule } from '@angular/common';
       <input formControlName="recruiter" placeholder="Recruiter" />
       <input formControlName="skills" placeholder="Skills" />
       <input formControlName="platform" placeholder="Platform" />
-      <input formControlName="perHoursMinimum" type="number" placeholder="Min per hour" />
-      <input formControlName="perHoursMaximum" type="number" placeholder="Max per hour" />
+      <input formControlName="salaryMinimum" type="number" placeholder="Min per hour" />
+      <input formControlName="salaryMaximum" type="number" placeholder="Max per hour" />
       <input formControlName="weeklyHours" type="number" placeholder="Weekly hours" />
       <input formControlName="duration" type="number" placeholder="Duration in months" />
       <input formControlName="experienceMinimum" type="number" placeholder="Min experience" />
@@ -69,8 +69,8 @@ export class OfferFormComponent {
       status: ['waiting'], //move to business logic
       platform: [''],
       skills: this.fb.array([]),
-      perHoursMinimum: [0, Validators.min(0)],
-      perHoursMaximum: [0, Validators.min(0)],
+      salaryMinimum: [0, Validators.min(0)],
+      salaryMaximum: [0, Validators.min(0)],
       weeklyHours: [0, Validators.min(0)],
       duration: [undefined],
       experienceMinimum: [0, Validators.min(0)],

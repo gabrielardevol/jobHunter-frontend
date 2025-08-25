@@ -3,15 +3,18 @@ import { RouterOutlet } from '@angular/router';
 import { OffersComponent } from './offers.component';
 import { OfferFormComponent } from "./offer-form.component";
 import { OffersService } from './services/offers.service';
+import { OfferDetailComponent } from "./offer-detail.component";
+import { NgIf } from "@angular/common";
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, OffersComponent, OfferFormComponent],
+  imports: [RouterOutlet, OffersComponent, OfferFormComponent, OfferDetailComponent, NgIf],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
 export class AppComponent {
   title = 'jobHunter-frontend';
-  selectedOffer: string | undefined = undefined;
+  updatingOffer: string | undefined = undefined;
+viewingOffer: any;
   constructor(public offersService: OffersService){}
 }

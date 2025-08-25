@@ -10,10 +10,13 @@
     <button>new response</button>
   </aside>
   <main>
-    <app-offer-form [offerId]="selectedOffer"></app-offer-form>
+
+    <app-offer-form [offerId]="updatingOffer"></app-offer-form>
+    <app-offer-detail *ngIf="viewingOffer" [offer]="viewingOffer"></app-offer-detail>
     <router-outlet></router-outlet>
     <app-offers 
-      (selectedOffer)="selectedOffer = $event" 
+      (updatingOffer)="updatingOffer = $event" 
+      (viewOffer)="viewingOffer = $event"
       (deletedOffer)="offersService.deleteOffer($event)">
     </app-offers>
   </main>
