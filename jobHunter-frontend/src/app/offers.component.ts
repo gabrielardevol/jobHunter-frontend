@@ -25,7 +25,6 @@ import { combineLatest, map, Observable, startWith } from 'rxjs';
       <option [ngValue]="'onProcess'">onProcess</option>
       <option [ngValue]="'contract'">contract</option>
       <option [ngValue]="'dumped'">dumped</option>
-
     </select>
 
     <input type="text" [formControl]="searchControl" placeholder="Search offers..." />
@@ -56,40 +55,39 @@ export class OffersComponent {
   searchControl = new FormControl('');
   filteredOffers$: Observable<Offer[]>;
   
-  
   constructor(public offersService: OffersService) {
-  this.filteredOffers$ = combineLatest([
-    this.offersService.offers$,
-    this.sortByControl.valueChanges.pipe(startWith(this.sortByControl.value)),
-    this.filterByStatusControl.valueChanges.pipe(startWith(this.filterByStatusControl.value)),
-    this.searchControl.valueChanges.pipe(startWith(this.searchControl.value))
-  ]).pipe(
-    map(([offers, sortBy, filterStatus, search]) => {
-      let result = [...offers];
+    this.filteredOffers$ = combineLatest([
+      this.offersService.offers$,
+      this.sortByControl.valueChanges.pipe(startWith(this.sortByControl.value)),
+      this.filterByStatusControl.valueChanges.pipe(startWith(this.filterByStatusControl.value)),
+      this.searchControl.valueChanges.pipe(startWith(this.searchControl.value))
+    ]).pipe(
+      map(([offers, sortBy, filterStatus, search]) => {
+        let result = [...offers];
 
-      if (filterStatus !== 'all') {
-        result = result.filter(o => o.status == filterStatus);
-      }
+        if (filterStatus !== 'all') {
+          result = result.filter(o => o.status == filterStatus);
+        }
 
-      if (search?.trim()) {
-        const searchLower = search.toLowerCase();
-        result = result.filter(o =>
-          o.company.toLowerCase().includes(searchLower) ||
-          o.role.toLowerCase().includes(searchLower)
-        );
-      }
+        if (search?.trim()) {
+          const searchLower = search.toLowerCase();
+          result = result.filter(o =>
+            o.company.toLowerCase().includes(searchLower) ||
+            o.role.toLowerCase().includes(searchLower)
+          );
+        }
 
-      if (sortBy) {
-        result.sort((a, b) => {
-          if (sortBy === 'company') return a.company.localeCompare(b.company);
-          if (sortBy === 'createdAt') return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
-          if (sortBy === 'salaryMax') return (a.salaryMaximum ?? 0) - (b.salaryMaximum ?? 0);
-          return 0;
-        });
-      }
+        if (sortBy) {
+          result.sort((a, b) => {
+            if (sortBy === 'company') return a.company.localeCompare(b.company);
+            if (sortBy === 'createdAt') return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+            if (sortBy === 'salaryMax') return (a.salaryMaximum ?? 0) - (b.salaryMaximum ?? 0);
+            return 0;
+          });
+        }
 
-      return result;
-    })
-  );    
+        return result;
+      })
+    );    
   }
 }
