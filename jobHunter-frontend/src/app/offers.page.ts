@@ -5,6 +5,7 @@ import { AsyncPipe } from "@angular/common";
 import { Offer } from './models/models';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { combineLatest, map, Observable, startWith } from 'rxjs';
+import { GlobalStateService } from './services/global-state.store';
 
 @Component({
   selector: 'app-offers',
@@ -37,9 +38,9 @@ import { combineLatest, map, Observable, startWith } from 'rxjs';
       {{offer.recruiter}}
       {{offer.skills}}
       {{offer.status}}
-      <button (click)="viewingOffer.emit(offer)">view</button>
-      <button (click)="updatingOffer.emit(offer.id)">update</button>
-      <button (click)="deletedOffer.emit(offer.id)">delete</button>
+      <button (click)="globalStateStore.setViewingOffer(offer)">view</button>
+      <button (click)="globalStateStore.setUpdatingOffer(offer.id)">update</button>
+      <button>delete</button>
       <hr>
     </div>
 
@@ -47,15 +48,12 @@ import { combineLatest, map, Observable, startWith } from 'rxjs';
   styles: ``
 })
 export class OffersPage {
-  @Output() updatingOffer = new EventEmitter<string>;
-  @Output() deletedOffer = new EventEmitter<string>;
-  @Output() viewingOffer = new EventEmitter<Offer>;
   sortByControl = new FormControl<undefined | 'company' | 'createdAt' | 'salaryMax'>('createdAt');
   filterByStatusControl = new FormControl<'waiting' | 'expired' | 'rejected' | 'onProcess' | 'contract' | 'dumped' | 'all'>('all');
   searchControl = new FormControl('');
   filteredOffers$: Observable<Offer[]>;
   
-  constructor(public offersService: OffersService) {
+  constructor(public offersService: OffersService, public globalStateStore: GlobalStateService) {
     this.filteredOffers$ = combineLatest([
       this.offersService.offers$,
       this.sortByControl.valueChanges.pipe(startWith(this.sortByControl.value)),

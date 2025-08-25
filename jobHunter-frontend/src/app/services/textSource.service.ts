@@ -39,7 +39,8 @@ export class TextSourceService {
   }
 
   fetchTextSources() {
-    if (environment.mockData) this.textSourceSubject.next([...OFFERS]);
+//    if (environment.mockData) this.textSourceSubject.next([...OFFERS]);
+    
 
     if (!this.db) return;
 
@@ -58,9 +59,9 @@ export class TextSourceService {
     };
   }
 
-  getOffer(offerId: string): Observable<TextSource | undefined> {
+  getTextSource(offerId: string): Observable<TextSource | undefined> {
     return this.textSources$.pipe(
-        map(offers => offers.find(offer => offer.id === offerId))
+        map(textSources => textSources.find(textSource => textSource.offerId === offerId))
       );
   }
 

@@ -1,9 +1,9 @@
-import { Offer , tRole, tStatus } from "../models/models";
+import { Offer , tRole, tStatus } from "./models/models";
 import { v4 as uuidv4 } from 'uuid';
 
 export const OFFERS: Offer[] = [
  {
-    id: uuidv4(),
+    id: '123',
     company: "TechCorp",
     role: "frontend" as tRole,
     hired: false,
@@ -22,7 +22,7 @@ export const OFFERS: Offer[] = [
     createdAt: new Date()
   },
   {
-    id: uuidv4(),
+    id: '234',
     company: "DataSolutions",
     role: "backend" as tRole,
     hired: false,
@@ -40,7 +40,7 @@ export const OFFERS: Offer[] = [
     createdAt: new Date()
   },
   {
-    id: uuidv4(),
+    id: '345',
     company: "AI StartUp",
     role: "data-scientist" as tRole,
     hired: false,

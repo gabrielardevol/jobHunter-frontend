@@ -38,7 +38,7 @@ export interface TextSource {
     id: string,
     content: string,
     createdAt: Date,
-    offer?: Offer,
+    offerId?: string,
     response?: Response
 }
 
