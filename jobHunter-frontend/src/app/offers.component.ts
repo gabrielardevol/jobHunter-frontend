@@ -8,11 +8,12 @@ import { Offer } from './models/models';
   selector: 'app-offers',
   imports: [NgForOf, AsyncPipe],
   template: `
-    <div  *ngFor="let offer of offersService.offers$ | async" (click)="viewingOffer.emit(offer)">
+    <div  *ngFor="let offer of offersService.offers$ | async" >
       {{offer.company}}
       {{offer.role}}
       {{offer.recruiter}}
       {{offer.skills}}
+      <button (click)="viewingOffer.emit(offer)">view</button>
       <button (click)="updatingOffer.emit(offer.id)">update</button>
       <button (click)="deletedOffer.emit(offer.id)">delete</button>
       <hr>
@@ -27,6 +28,6 @@ export class OffersComponent {
   @Output() viewingOffer = new EventEmitter<Offer>;
 
   constructor(public offersService: OffersService) {
-
+      
   }
 }

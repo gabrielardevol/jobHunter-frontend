@@ -7,7 +7,6 @@ import { Offer } from './models/models';
   template: `
     <p>
       {{offer.company}}
-      offer-detail works!
     </p>
   `,
   styles: ``
@@ -15,4 +14,7 @@ import { Offer } from './models/models';
 export class OfferDetailComponent {
   @Input() offer!: Offer;
 
+  ngOnChanges(){
+    console.log("changes", this.offer)
+  }
 }
