@@ -40,6 +40,7 @@ import { CommonModule } from '@angular/common';
       <input formControlName="experienceMinimum" type="number" placeholder="Min experience" />
       <input formControlName="experienceMaximum" type="number" placeholder="Max experience" />
 
+      <button *ngIf="offerId" type="button" (click)="offerId = undefined">Cancel</button>
       <button [disabled]="!offerForm.valid" type="submit">
         {{ offerId ? 'Update Offer' : 'Create Offer'}}
       </button>
