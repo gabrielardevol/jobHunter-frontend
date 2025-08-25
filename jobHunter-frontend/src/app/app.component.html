@@ -10,8 +10,8 @@
     <button>new response</button>
   </aside>
   <main>
-    <app-offer-creation></app-offer-creation>
+    <app-offer-form [offerId]="selectedOffer"></app-offer-form>
     <router-outlet></router-outlet>
-    <app-offers></app-offers>
+    <app-offers (selectedOffer)="selectedOffer = $event"></app-offers>
   </main>
 </div>

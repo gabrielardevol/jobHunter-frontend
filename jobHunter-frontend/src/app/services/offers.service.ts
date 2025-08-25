@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, of } from 'rxjs';
+import { BehaviorSubject, map, Observable, of } from 'rxjs';
 import { Offer } from '../models/models';
 import { OFFERS } from '../mocks/offers.mock';
 import { HttpClient } from '@angular/common/http';
@@ -27,6 +27,13 @@ export class OffersService {
     // desa totes les ofertes com a offersSubject
   }
 
+  getOffer(offerId: string): Observable<Offer | undefined> {
+    console.log("getting offer");
+    return this.offers$.pipe(
+        map(offers => offers.find(offer => offer.id === offerId))
+      );
+  }
+
   addOffer(offer: Offer) {
     const currentOffers = this.offersSubject.value;
     this.offersSubject.next([...currentOffers, offer]);
@@ -35,7 +42,12 @@ export class OffersService {
     // si no, la desa a indexedDB
   }
 
-  updateOffer(index: number, offer: Offer) {
+  updateOffer(id: string, updatedOffer: Offer) {
+    const current = this.offersSubject.value;
+    const updated = current.map(offer =>
+      offer.id === id ? { ...offer, ...updatedOffer } : offer
+    );
+    this.offersSubject.next(updated);
     //actualitza la oferta al behaviourSubject
     // si mock = false ------------
     //si està autenticat, actualitza la oferta al backend
