@@ -12,6 +12,7 @@
   <main>
 
     <app-offer-form [offerId]="updatingOffer"></app-offer-form>
+    <hr>
     <app-offer-detail *ngIf="viewingOffer" 
         [offer]="viewingOffer"
         (updatingOffer)="updatingOffer = $event" 
