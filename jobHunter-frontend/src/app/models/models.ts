@@ -20,6 +20,7 @@ export interface Offer {
     experienceMinimum?: number,
     experienceMaximum?: number,
     createdAt: Date,
+    deletedAt?: Date,
     responses?: Response[],
     textSource?: TextSource,
     comments?: Comment[],

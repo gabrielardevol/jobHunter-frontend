@@ -18,7 +18,7 @@
     <button (click)="showTestSnackbar()">create snackbar</button>
   <div *ngFor="let snack of snackbarService.snackbars$ | async">
   <span>{{ snack.message }}</span>
-  <button *ngIf="snack.action" (click)="snack.action()">Action</button>
+  <button *ngIf="snack.action" (click)="snack.action(); snackbarService.removeSnackbar(snack.id)">Undo</button>
 </div>
   </main>
 </div> 
