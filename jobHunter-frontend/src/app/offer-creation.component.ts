@@ -5,7 +5,6 @@ import { OffersService } from './services/offers.service';
 import { debounceTime, Observable } from 'rxjs';
 import { LlmService } from './services/llm.service';
 import { v4 as uuidv4 } from 'uuid';
-import { environment } from '../environments/environment';
 
 @Component({
   selector: 'app-offer-creation',
