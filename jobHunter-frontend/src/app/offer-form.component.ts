@@ -12,7 +12,7 @@ import { CommonModule } from '@angular/common';
   selector: 'app-offer-form',
   imports: [ReactiveFormsModule, CommonModule ],
   template: `
-    <input *ngIf="offerId == undefined" [formControl]="llmControl" placeholder="Type something..." />
+    <input *ngIf="!offerId" [formControl]="llmControl" placeholder="Type something..." />
 
     <form [formGroup]="offerForm" (ngSubmit)="offerId ?
     offersService.updateOffer(offerId, offerForm.value) :
