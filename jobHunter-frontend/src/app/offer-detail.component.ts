@@ -13,7 +13,7 @@ import { Observable } from 'rxjs';
 
 <div *ngIf="offer$ | async as offer">
   <button (click)="globalStateStore.setUpdatingOffer(offer!.id)">update</button>
-  <button (click)="offerService.deleteOffer(offer!.id)">delete</button>
+  <button (click)="offerService.deleteOffer(offer!.id); globalStateStore.setViewingOffer(undefined)">delete</button>
   <button (click)="globalStateStore.setViewingOffer(undefined)">close</button>
 
   <h3>{{ offer!.company }} ({{ offer!.role }})</h3>

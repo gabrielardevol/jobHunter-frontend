@@ -65,6 +65,7 @@ export class OffersService {
   }
 
   addOffer(offer: Offer) {
+    console.log(offer)
     offer.id = uuidv4();
     offer.createdAt = new Date();
     offer.status = "waiting";

@@ -1,24 +1,20 @@
-import { Component, DestroyRef, Input } from '@angular/core';
+import { Component, DestroyRef } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 import { OffersService } from './services/offers.service';
-import { debounceTime, Observable, switchMap, tap } from 'rxjs';
+import { debounceTime, Observable, of, switchMap, take, tap } from 'rxjs';
 import { LlmService } from './services/llm.service';
-import { v4 as uuidv4 } from 'uuid';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { CommonModule } from '@angular/common';
+import { CommonModule, AsyncPipe } from '@angular/common';
+import { GlobalStateService } from './services/global-state.store';
 
 @Component({
   selector: 'app-offer-form',
-  imports: [ReactiveFormsModule, CommonModule ],
+  imports: [ReactiveFormsModule, CommonModule , AsyncPipe],
   template: `
-    <input *ngIf="!offerId" [formControl]="llmControl" placeholder="Type something..." />
+    <input *ngIf="!(offerId$ | async)" [formControl]="llmControl" placeholder="Type something..." />
 
-    <form [formGroup]="offerForm" (ngSubmit)="offerId ?
-    offersService.updateOffer(offerId, offerForm.value) :
-    offersService.addOffer(offerForm.value);  
-    offerForm.reset(); offerId = undefined;
-    "> 
+    <form [formGroup]="offerForm" (ngSubmit)="onSubmit()"> 
     
       <input formControlName="company" placeholder="Company" />
     
@@ -46,9 +42,9 @@ import { CommonModule } from '@angular/common';
       <input formControlName="experienceMinimum" type="number" placeholder="Min experience" />
       <input formControlName="experienceMaximum" type="number" placeholder="Max experience" />
 
-      <button *ngIf="offerId" type="button" (click)="offerId = undefined">Cancel</button>
+      <button *ngIf="!(offerId$ | async)" type="button" (click)="globalStateStore.setUpdatingOffer(undefined)">Cancel</button>
       <button [disabled]="!offerForm.valid" type="submit">
-        {{ offerId ? 'Update Offer' : 'Create Offer'}}
+        {{ (offerId$ | async) ? 'Update Offer' : 'Create Offer'}}
       </button>
     </form>
   `,
@@ -56,7 +52,7 @@ import { CommonModule } from '@angular/common';
   styles: ``
 })
 export class OfferFormComponent {
-  @Input() offerId: string | undefined; //used as 'update'
+  offerId$: Observable<string | undefined>; //used as 'update'
   offerForm: FormGroup;
   llmControl: FormControl = new FormControl;
   textSource$: Observable<string> = this.llmControl.valueChanges.pipe(
@@ -64,7 +60,7 @@ export class OfferFormComponent {
 //    tap(value => console.log('Valor actual del control:', value))
   );
   
-  constructor(private fb: FormBuilder, public offersService: OffersService, public llmService: LlmService, private destroyRef: DestroyRef) {
+  constructor(private fb: FormBuilder, public globalStateStore: GlobalStateService, public offersService: OffersService, public llmService: LlmService, private destroyRef: DestroyRef) {
 //    console.log('offerId from offer-form', this.offerId);
     this.offerForm = this.fb.group({
       company: ['', Validators.required],
@@ -81,25 +77,46 @@ export class OfferFormComponent {
       experienceMinimum: [0, Validators.min(0)],
       experienceMaximum: [0, Validators.min(0)],
     });
+
+    this.offerId$ = globalStateStore.updatingOffer$;
+    
   }
 
   ngOnInit(): void {
-     this.textSource$
+    this.offerId$
     .pipe(
-      switchMap(text => this.llmService.promptOffer(text)),
-//      tap(value => console.log('Valor actual del control:', value)),
+      switchMap(id => id ? this.offersService.getOffer(id) : of(undefined)),
       takeUntilDestroyed(this.destroyRef)
     )
-    .subscribe(parsed => this.offerForm.patchValue(parsed));
-  }
-
-  ngOnChanges(){
+    .subscribe(res => {
       this.offerForm.reset();
-     if (this.offerId) {
-      this.offersService.getOffer(this.offerId).subscribe(
-        res => { console.log(res); res ? this.offerForm.patchValue(res) : null }
-      )
-    }
+      if (res) {
+        this.offerForm.patchValue(res);
+      }
+    });
+
+    this.textSource$
+    .pipe(
+      switchMap(text => this.llmService.promptOffer(text)),
+      takeUntilDestroyed(this.destroyRef)
+    )
+    .subscribe(parsed => {
+      this.offerForm.patchValue(parsed);
+    });
   }
 
+  onSubmit() {
+
+    this.offerId$.pipe(take(1)).subscribe(offerId => {
+      if (offerId) {
+        this.offersService.updateOffer(offerId, this.offerForm.value);
+      } else {
+        this.offersService.addOffer(this.offerForm.value);
+      }
+      this.offerForm.reset();
+    });
+
+    this.globalStateStore.setUpdatingOffer(undefined);
+    this.llmControl.reset();
+  }
 }

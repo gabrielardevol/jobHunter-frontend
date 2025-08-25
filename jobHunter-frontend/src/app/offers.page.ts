@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component } from '@angular/core';
 import { OffersService } from './services/offers.service';
 import { NgForOf } from "@angular/common";
 import { AsyncPipe } from "@angular/common";
@@ -32,7 +32,7 @@ import { GlobalStateService } from './services/global-state.store';
 
     <button (click)="sortByControl.setValue(undefined); filterByStatusControl.setValue('all'); searchControl.setValue('')">clear filters</button>
 
-    <div  *ngFor="let offer of filteredOffers$ | async" >
+    <div *ngFor="let offer of filteredOffers$ | async" >
       {{offer.company}}
       {{offer.role}}
       {{offer.recruiter}}
@@ -40,10 +40,9 @@ import { GlobalStateService } from './services/global-state.store';
       {{offer.status}}
       <button (click)="globalStateStore.setViewingOffer(offer)">view</button>
       <button (click)="globalStateStore.setUpdatingOffer(offer.id)">update</button>
-      <button>delete</button>
+      <button (click)="offersService.deleteOffer(offer!.id);">delete</button>
       <hr>
     </div>
-
   `,
   styles: ``
 })

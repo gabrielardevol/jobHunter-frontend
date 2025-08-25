@@ -11,7 +11,7 @@
   </aside>
   <main>
 
-    <app-offer-form [offerId]="updatingOffer"></app-offer-form>
+    <app-offer-form></app-offer-form>
     <hr>
     <app-offer-detail  *ngIf="globalStateStore.viewingOffer$ | async as offer" />
     <router-outlet></router-outlet>
