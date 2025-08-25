@@ -18,20 +18,27 @@ export interface Offer {
     durationMonths?: number | undefined,
     experienceMinimum?: number,
     experienceMaximum?: number,
-    createdAt: Date
+    createdAt: Date,
+    responses?: Response[],
+    textSource?: TextSource,
+    comments?: Comment[],
+    user?: User,
 }
 
 export interface Response {
     id: string,
     type: tResponseType,
     date: Date | undefined,
-    createdAt: Date
+    createdAt: Date,
+    offer: Offer
 }
 
 export interface TextSource {
     id: string,
     content: string,
-    createdAt: Date
+    createdAt: Date,
+    offer?: Offer,
+    response?: Response
 }
 
 export interface User {

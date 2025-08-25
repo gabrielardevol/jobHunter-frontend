@@ -2,6 +2,7 @@ import { Offer } from "../models/models";
 
 export const OFFERS: Offer[] = [
   {
+    id: '2243eewd',
     company: 'TechCorp',
     role: 'frontend',
     hired: false,
@@ -16,9 +17,10 @@ export const OFFERS: Offer[] = [
     durationMonths: 6,
     experienceMinimum: 2,
     experienceMaximum: 4,
-    createdAt: new Date('2025-01-10')
+    createdAt: new Date('2025-01-10'),
   },
   {
+    id: '2243eedsadaswd',
     company: 'DataSoft',
     role: 'backend',
     hired: false,
@@ -36,6 +38,7 @@ export const OFFERS: Offer[] = [
     createdAt: new Date('2025-02-02')
   },
   {
+    id: '2243eascascsacewd',
     company: 'Global Solutions',
     role: 'fullstack',
     hired: true,
@@ -53,6 +56,7 @@ export const OFFERS: Offer[] = [
     createdAt: new Date('2024-12-15')
   },
   {
+    id: 'ewfdwffd',
     company: 'StartUpX',
     role: 'others',
     hired: false,

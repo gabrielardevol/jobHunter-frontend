@@ -4,6 +4,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { OffersService } from './services/offers.service';
 import { debounceTime, Observable } from 'rxjs';
 import { LlmService } from './services/llm.service';
+import { v4 as uuidv4 } from 'uuid';
 
 @Component({
   selector: 'app-offer-creation',
@@ -47,6 +48,7 @@ export class OfferCreationComponent {
   
   constructor(private fb: FormBuilder, public offersService: OffersService, public llmService: LlmService) {
     this.offerForm = this.fb.group({
+      id: [uuidv4()],
       company: ['', Validators.required],
       role: ['', Validators.required],
       location: [''],
