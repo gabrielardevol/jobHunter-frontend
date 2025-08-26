@@ -1,14 +1,14 @@
 import { Component, DestroyRef } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
-import { OffersService } from '../../services/offers.service';
+import { OffersService } from '../services/offers.service';
 import { debounceTime, filter, Observable, switchMap, tap } from 'rxjs';
-import { LlmService } from '../../services/llm.service';
+import { LlmService } from '../services/llm.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
-import { TextSourceService } from '../../services/textSources.service';
+import { TextSourceService } from '../services/textSources.service';
 import { v4 as uuidv4 } from 'uuid';
-import { ModalService } from '../../services/modals.service';
+import { ModalService } from '../services/modals.service';
 
 @Component({
   selector: 'app-offer-form',
