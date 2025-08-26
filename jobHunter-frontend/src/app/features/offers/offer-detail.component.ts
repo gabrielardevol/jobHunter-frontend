@@ -5,11 +5,12 @@ import { GlobalStateService } from '../../services/global-state.store';
 import { OffersService } from '../../services/offers.service';
 import { filter, Observable, switchMap, tap } from 'rxjs';
 import { TextSourceService } from '../../services/textSource.service';
-
+import { environment } from '../../../environments/environment';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-offer-detail',
-  imports: [CommonModule],
+  imports: [CommonModule , FormsModule],
   template: `
 
   <div *ngIf="offer$ | async as offer">
@@ -18,6 +19,9 @@ import { TextSourceService } from '../../services/textSource.service';
     <button (click)="globalStateStore.openOfferDetail(undefined)">close</button>
 
     <h3>{{ offer!.company }} ({{ offer!.role }})</h3>
+    <select name="" id="" [(ngModel)]="offer!.status" (ngModelChange)="offerService.updateOffer(offer!.id, offer!)">
+      <option *ngFor="let state of environment.offerStates" value={{state}}>{{state}}</option>
+    </select>
     <p>Status: {{ offer!.status }}</p>
     <p>Hired: {{ offer!.hired ?? 'N/A' }}</p>
     <p>Location: {{ offer!.location ?? 'N/A' }}</p>
@@ -60,6 +64,7 @@ import { TextSourceService } from '../../services/textSource.service';
 export class OfferDetailComponent {
   offer$: Observable<Offer | undefined>;
   textSource$: Observable<TextSource | undefined>;
+  environment = environment;
 
   constructor(public globalStateStore: GlobalStateService, public offerService: OffersService, public textSourceService: TextSourceService) {
     this.offer$ = globalStateStore.viewingOffer$

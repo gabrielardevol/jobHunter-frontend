@@ -4,5 +4,4 @@ export const environment = {
     llmModel: "llama-3.3-70b-versatile",
     mockData: false,
     offerStates: [ 'waiting' , 'expired' , 'rejected' , 'onProcess' , 'contract' , 'dumped']
-
 };
