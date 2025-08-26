@@ -1,26 +1,26 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Inject, Input, Output } from '@angular/core';
 import { Offer, TextSource } from '../../models/models';
 import { CommonModule } from '@angular/common';
-import { GlobalStateService } from '../../services/global-state.store';
 import { OffersService } from '../../services/offers.service';
 import { filter, Observable, switchMap, tap } from 'rxjs';
 import { TextSourceService } from '../../services/textSource.service';
 import { environment } from '../../../environments/environment';
 import { FormsModule } from '@angular/forms';
+import { ModalService } from '../../services/modal.service';
 
 @Component({
   selector: 'app-offer-detail',
   imports: [CommonModule , FormsModule],
   template: `
 
-  <div *ngIf="offer$ | async as offer">
-    <button (click)="offerService.deleteOffer(offer!.id); globalStateStore.openOfferDetail(undefined)">delete</button>
+  <div *ngIf="offer && editableOffer">
+    <button (click)="offerService.deleteOffer(offer!.id)">delete</button>
     <button (click)="close()">{{ pendingChanges() ? 'close without saving' : 'close'}}</button>
 
-    <h3>{{ offer!.company }} ({{ offer!.role }})</h3>     
+    <h3>{{ offer.company }} ({{ offer!.role }})</h3>     
     <p>Created At: {{ offer!.createdAt | date:'medium' }}</p>
 
-    <p>status:<select name="" id="" [(ngModel)]="editableOffer!.status" (ngModelChange)="offerService.updateOffer(offer!.id, offer!)">
+    <p>status:<select name="" id="" [(ngModel)]="editableOffer.status" (ngModelChange)="offerService.updateOffer(offer!.id, offer!)">
       <option *ngFor="let state of environment.offerStates" value={{state}}>{{state}}</option>
     </select></p>  
     
@@ -112,43 +112,36 @@ import { FormsModule } from '@angular/forms';
 })
 export class OfferDetailComponent {
 
-  offer$: Observable<Offer | undefined>;
-  editableOffer: Offer | null = null;
-  originalOffer: Offer | null = null;
+  editableOffer: Offer | undefined;
   textSource$?: Observable<TextSource | undefined>;
+  @Input() offer: Offer | undefined;
+
   environment = environment;
 
   constructor(
-    public globalStateStore: GlobalStateService,
     public offerService: OffersService,
-    public textSourceService: TextSourceService
+    public textSourceService: TextSourceService,
+    public modalService: ModalService
   ) {
-    this.offer$ = globalStateStore.viewingOffer$;
-
-    this.offer$.pipe(
-      filter((offer): offer is Offer => !!offer),
-      tap(offer => {
-        this.originalOffer = offer;
-        this.editableOffer = { ...offer };
-      }),
-      switchMap(offer => this.textSourceService.getOfferTextSource(offer.id)),
-//      tap(response => console.log(response))
-    ).subscribe(response => {
-      this.textSource$ = new Observable<TextSource | undefined>(observer => observer.next(response));
-    });
+  }
+  
+  ngOnInit() {
+    this.textSource$ = this.textSourceService.getOfferTextSource(this.offer!.id);
+    this.editableOffer = Object.assign({}, this.offer);
   }
 
   saveChanges() {
     if (!this.editableOffer) return;
     this.offerService.updateOffer(this.editableOffer.id, this.editableOffer);
-    this.originalOffer = { ...this.editableOffer };
+    this.offer = Object.assign({}, this.editableOffer);
+
   }
 
   close() {
-    this.globalStateStore.closeOfferDetail()
+    this.modalService.close()
   }
 
   pendingChanges(): boolean {
-    return JSON.stringify(this.editableOffer) !== JSON.stringify(this.originalOffer);
+    return JSON.stringify(this.editableOffer) !== JSON.stringify(this.offer);
   }
 }

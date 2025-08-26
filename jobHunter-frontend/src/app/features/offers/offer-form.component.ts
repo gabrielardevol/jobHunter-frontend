@@ -6,9 +6,9 @@ import { debounceTime, Observable, of, switchMap, take, tap } from 'rxjs';
 import { LlmService } from '../../services/llm.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
-import { GlobalStateService } from '../../services/global-state.store';
 import { TextSourceService } from '../../services/textSource.service';
 import { v4 as uuidv4 } from 'uuid';
+import { ModalService } from '../../services/modal.service';
 
 @Component({
   selector: 'app-offer-form',
@@ -44,7 +44,7 @@ import { v4 as uuidv4 } from 'uuid';
       <input formControlName="experienceMinimum" type="number" placeholder="Min experience" />
       <input formControlName="experienceMaximum" type="number" placeholder="Max experience" />
 
-      <button type="button" (click)="closeCreateOffer.emit()">Cancel</button>
+      <button type="button" (click)="onClose()">Cancel</button>
       <button [disabled]="!offerForm.valid" type="submit">
         Create Offer
       </button>
@@ -55,14 +55,20 @@ import { v4 as uuidv4 } from 'uuid';
   styles: ``
 })
 export class OfferFormComponent {
-  @Output() closeCreateOffer = new EventEmitter<any>;
   offerForm: FormGroup;
   llmControl: FormControl = new FormControl;
   textSource$: Observable<string> = this.llmControl.valueChanges.pipe(
     debounceTime(700),
   );
   
-  constructor(private fb: FormBuilder, public textSourceService: TextSourceService, public globalStateStore: GlobalStateService, public offersService: OffersService, public llmService: LlmService, private destroyRef: DestroyRef) {
+  constructor(
+    private fb: FormBuilder, 
+    public textSourceService: TextSourceService, 
+    public offersService: OffersService, 
+    public llmService: LlmService, 
+    private destroyRef: DestroyRef,
+    private modalService: ModalService
+  ) {
     this.offerForm = this.fb.group({
       id: uuidv4(),
       company: ['', Validators.required],
@@ -98,5 +104,9 @@ export class OfferFormComponent {
       content: this.llmControl.value, 
       offerId: this.offerForm.value.id });
     this.llmControl.reset();
+  }
+
+  onClose(){
+    this.modalService.close()
   }
 }

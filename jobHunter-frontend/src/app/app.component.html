@@ -1,26 +1,34 @@
 <nav style="border-bottom: 1px solid black">jobHunter</nav>
+
 <div style="display: flex;">
+  <!-- MENU -->
   <aside style="border-right: 1px solid black">
     <ul>
       <li><a routerLink="/dashboard">Dashboard</a></li>
       <li><a routerLink="/offers">Offers</a></li>
       <li><a routerLink="/calendar">Calendar</a></li>
     </ul>
-    <button (click)="creatingOffer = true">new offer</button>
+    <button (click)="openOfferForm()">new offer</button>
     <button>new response</button>
   </aside>
-  <main>
 
-    <app-offer-form *ngIf="(globalStateStore.updatingOffer$ | async) || creatingOffer" 
-    (closeCreateOffer)="creatingOffer = false;"></app-offer-form>
-  
-    <app-offer-detail *ngIf="globalStateStore.viewingOffer$ | async as offer"/>
+  <main>
+     <!-- MODAL -->
+    <ng-template #modalHost></ng-template>
+    <div class="modal-backdrop" *ngIf="modalData">
+    </div>
+
+    <!-- ROUTER OUTLET -->
     <router-outlet></router-outlet>
 
-  <div *ngFor="let snack of snackbarService.snackbars$ | async">
-  <span>{{ snack.message }}</span>
-  <button *ngIf="snack.action" (click)="snack.action(); snackbarService.removeSnackbar(snack.id!)">Undo</button>
-  <button (click)="snackbarService.removeSnackbar(snack.id!)">X</button>
-</div>
+    <!-- SNACKBARS -->
+    <div *ngFor="let snack of snackbarService.snackbars$ | async">
+      <span>{{ snack.message }}</span>
+      <button *ngIf="snack.action" (click)="snack.action(); snackbarService.removeSnackbar(snack.id!)">
+        Undo
+      </button>
+      <button (click)="snackbarService.removeSnackbar(snack.id!)">X</button>
+    </div>
   </main>
+
 </div> 
