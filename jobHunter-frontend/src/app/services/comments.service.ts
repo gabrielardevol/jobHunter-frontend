@@ -68,4 +68,26 @@ export class CommentsService {
       map(comments => comments.find(c => c.id === commentId))
     );
   }
+getCommentsByResponse(responseId: string): Observable<Comment[]> {
+  return this.comments$.pipe(
+    map(comments => 
+      comments
+        .filter(c => c.responseId === responseId)
+        .sort((a, b) => (a.createdAt?.getTime() ?? 0) - (b.createdAt?.getTime() ?? 0))
+    )
+  );
+}
+
+getCommentsByOffer(offerId: string): Observable<Comment[]> {
+  return this.comments$.pipe(
+    map(comments => 
+      comments
+        .filter(c => c.offerId === offerId)
+        .sort((a, b) => (a.createdAt?.getTime() ?? 0) - (b.createdAt?.getTime() ?? 0))
+    )
+  );
+}
+
+
+
 }

@@ -3,8 +3,8 @@ import { BehaviorSubject, map, Observable } from 'rxjs';
 import { TextSource } from '../models/models';
 import { v4 as uuidv4 } from 'uuid';
 import { environment } from '../../environments/environment.development';
-import { TEXT_SOURCE } from '../mocks/textSource.mock';
-import { TextSourcesRepository } from './textSource.repository';
+import { TEXT_SOURCE } from '../mocks/textSources.mock';
+import { TextSourcesRepository } from './textSources.repository';
 
 @Injectable({
   providedIn: 'root'

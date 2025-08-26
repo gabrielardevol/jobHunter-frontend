@@ -8,10 +8,11 @@ import { environment } from '../../../environments/environment';
 import { FormsModule } from '@angular/forms';
 import { ModalService } from '../../services/modals.service';
 import { ResponsesService } from '../../services/responses.service';
+import { CommentFormComponent } from "./comment-form.component";
 
 @Component({
   selector: 'app-offer-detail',
-  imports: [CommonModule , FormsModule],
+  imports: [CommonModule, FormsModule, CommentFormComponent],
   template: `
 
   <div *ngIf="offer && editableOffer">
@@ -114,6 +115,7 @@ import { ResponsesService } from '../../services/responses.service';
       <p *ngIf="textSource$ | async as textSource">{{textSource!.content}}</p>
     </div>
 
+    <app-comment-form [offerId]="offer.id"></app-comment-form>
     <hr>
   </div>
 
