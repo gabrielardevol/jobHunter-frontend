@@ -102,18 +102,20 @@ export class ResponseFormComponent {
 
   onSubmit() {
     this.responsesService.addResponse(this.responseForm.value as Response);
-     this.textSourceService.addTextSource({
-      content: this.llmControl.value, 
-      offerId: this.responseForm.value.id });
+    this.textSourceService.addTextSource({
+    content: this.llmControl.value, 
+    offerId: this.responseForm.value.id });
     this.llmControl.reset();
+    this.modalService.close();
+
   }
 
   onClose() {
     this.modalService.close();
   }
 
-   damerauLevenshtein(a: string, b: string): number {
-  const dp: number[][] = Array.from({ length: a.length + 1 }, () =>
+  damerauLevenshtein(a: string, b: string): number {
+    const dp: number[][] = Array.from({ length: a.length + 1 }, () =>
     Array(b.length + 1).fill(0)
   );
 
