@@ -65,14 +65,18 @@ export class ResponseFormComponent {
     private offersService: OffersService,
     private textSourceService: TextSourceService
   ) {
-    this.responseForm = this.fb.group({
-      id: uuidv4(),
-      type: ['', Validators.required],
-      date: [undefined],
-      createdAt: [new Date()],
-      company: [''],
-      offerId: ['', Validators.required] // aquí tens l’oferta associada
-    });
+this.responseForm = this.fb.group(
+  {
+    id: uuidv4(),
+    type: ['', Validators.required],
+    date: [undefined],
+    createdAt: [new Date()],
+    company: [''],
+    offerId: ['', Validators.required]
+  },
+  { validators: this.dateRequiredIfNeeded }
+);
+
     
     const companyControl = this.responseForm.get('company');
 
@@ -155,4 +159,15 @@ similarity(a: string, b: string): number {
   const maxLen = Math.max(a.length, b.length);
   return 1 - dist / maxLen; // 0 = diferents, 1 = iguals
 }
+
+private dateRequiredIfNeeded(formGroup: FormGroup) {
+  const type = formGroup.get('type')?.value;
+  const date = formGroup.get('date')?.value;
+
+  if ((type === 'interview' || type === 'assignment') && !date) {
+    return { dateRequired: true };
+  }
+  return null;
+}
+
 }

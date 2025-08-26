@@ -1,21 +1,18 @@
-import { Component, DestroyRef, Input } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { Component, Input } from '@angular/core';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { debounceTime, Observable, switchMap } from 'rxjs';
+import { Observable } from 'rxjs';
 import { v4 as uuidv4 } from 'uuid';
 import { Comment } from '../../models/models';
 import { CommentsService } from '../../services/comments.service';
-import { LlmService } from '../../services/llm.service';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { ModalService } from '../../services/modals.service';
 
 @Component({
   selector: 'app-comment-form',
   standalone: true,
   imports: [ReactiveFormsModule, CommonModule],
+
+
   template: `
-
-
   <div *ngIf="comments$ | async as comments">
     <ul>
       <li *ngFor="let comment of comments">
@@ -25,18 +22,17 @@ import { ModalService } from '../../services/modals.service';
   </div>
     
   <form [formGroup]="commentForm" (ngSubmit)="onSubmit()"> 
-    <textarea formControlName="content" placeholder="Comment content"></textarea>
-
-
+    <input type="text" formControlName="content" placeholder="add a comment">
     <button [disabled]="!commentForm.valid" type="submit">
-      Add Comment
+      send
     </button>
   </form>
-  <hr>
-
   `,
-  styles: `textarea { width: 100%; height: 100px; }`
+
+
+  styles: ``
 })
+
 export class CommentFormComponent {
   @Input() offerId?: string;
   @Input() responseId?: string;
@@ -46,20 +42,22 @@ export class CommentFormComponent {
   constructor(
     private fb: FormBuilder,
     private commentsService: CommentsService,
-    private destroyRef: DestroyRef,
   ) {
+
+    // form
     this.commentForm = this.fb.group({
       id: uuidv4(),
       content: ['', Validators.required],
       createdAt: [new Date()]
     });
 
+    // comement list
     this.comments$ = this.offerId ?  commentsService.getCommentsByOffer(this.offerId) : commentsService.getCommentsByOffer(this.responseId!) 
   }
 
   onSubmit() {
     this.commentsService.addComment(this.commentForm.value.content);
-    this.commentForm.reset({ id: uuidv4(), content: '', createdAt: new Date() }); //???
+    this.commentForm.reset();
   }
 
 }

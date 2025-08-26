@@ -16,7 +16,7 @@ import { CommentFormComponent } from "./comment-form.component";
   template: `
 
   <div *ngIf="offer && editableOffer">
-    <button (click)="offerService.deleteOffer(offer!.id)">delete</button>
+    <button (click)="offerService.deleteOffer(offer!.id); close()">delete</button>
     <button (click)="close()">{{ pendingChanges() ? 'close without saving' : 'close'}}</button>
 
     <h3>{{ offer.company }} ({{ offer!.role }})</h3>     
