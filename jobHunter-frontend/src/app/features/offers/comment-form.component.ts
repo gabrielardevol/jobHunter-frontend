@@ -51,7 +51,7 @@ export class CommentFormComponent {
       createdAt: [new Date()]
     });
 
-    // comement list
+    // comment list
     this.comments$ = this.offerId ?  commentsService.getCommentsByOffer(this.offerId) : commentsService.getCommentsByOffer(this.responseId!) 
   }
 

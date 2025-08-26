@@ -18,7 +18,7 @@ import { ModalService } from '../services/modals.service';
     <input [formControl]="llmControl" placeholder="copy-paste offer description"/>
     <span *ngIf="isLoading">Processing...</span>
 
-    <form [formGroup]="offerForm" (ngSubmit)="onSubmit()"> 
+    <form [formGroup]="offerForm" (ngSubmit)="onSubmit(); modalService.close()"> 
     
       <label>
         Company <input formControlName="company" placeholder="Company" aria-required="true" />

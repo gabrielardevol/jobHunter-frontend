@@ -3,7 +3,6 @@ import { BehaviorSubject, map, Observable } from 'rxjs';
 import { TextSource } from '../models/models';
 import { v4 as uuidv4 } from 'uuid';
 import { environment } from '../../environments/environment.development';
-import { TEXT_SOURCE } from '../mocks/textSources.mock';
 import { TextSourcesRepository } from './textSources.repository';
 
 @Injectable({
@@ -14,7 +13,7 @@ export class TextSourceService {
   textSources$ = this.textSourceSubject.asObservable();
 
   constructor(private repository: TextSourcesRepository) {
-    environment.mockData ? this.loadMockData() : this.fetchTextSources();
+    this.fetchTextSources();
   }
 
   private async fetchTextSources(): Promise<void> {
@@ -22,10 +21,6 @@ export class TextSourceService {
     const all = await this.repository.getAll();
     this.textSourceSubject.next(all);
     console.log('TextSources fetched from repository:', all);
-  }
-
-  private loadMockData(): void {
-    this.textSourceSubject.next([...TEXT_SOURCE]);
   }
 
   getOfferTextSource(id: string): Observable<TextSource | undefined> {

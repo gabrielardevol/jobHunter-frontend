@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, map, Observable } from 'rxjs';
+import { BehaviorSubject, map, Observable, take } from 'rxjs';
 import { v4 as uuidv4 } from 'uuid';
-import { Response } from '../models/models';
+import { Offer, Response } from '../models/models';
 import { SnackbarService } from './snackbars.service';
 import { ResponsesRepository } from './responses.repository';
+import { OffersService } from './offers.service';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +15,8 @@ export class ResponsesService {
 
   constructor(
     private snackbarService: SnackbarService,
-    private responsesRepo: ResponsesRepository
+    private responsesRepo: ResponsesRepository,
+    private offerService: OffersService
   ) {
     this.init();
   }
@@ -37,6 +39,29 @@ export class ResponsesService {
     await this.responsesRepo.save(response);
     await this.refreshResponses();
 
+   this.offerService.getOffer(response.offerId).pipe(
+    take(1)
+    ).subscribe(offer => {
+      if (!offer) return;
+
+      let newStatus: 'waiting' | 'onProcess' | 'contract' | 'rejected' = 'waiting';
+
+      switch (response.type) {
+        case 'interview':
+        case 'assignment':
+          newStatus = 'onProcess';
+          break;
+        case 'contract':
+          newStatus = 'contract';
+          break;
+        case 'rejection':
+          newStatus = 'rejected';
+          break;
+      }
+
+      const updatedOffer: Offer = { ...offer, status: newStatus };
+      this.offerService.updateOffer(updatedOffer.id, updatedOffer);
+    });
     this.snackbarService.addSnackbar({
       message: 'Response has been created',
     });
