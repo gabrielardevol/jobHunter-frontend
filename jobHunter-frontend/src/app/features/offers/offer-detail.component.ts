@@ -20,7 +20,7 @@ import { ModalService } from '../../services/modal.service';
     <h3>{{ offer.company }} ({{ offer!.role }})</h3>     
     <p>Created At: {{ offer!.createdAt | date:'medium' }}</p>
 
-    <p>status:<select name="" id="" [(ngModel)]="editableOffer.status" (ngModelChange)="offerService.updateOffer(offer!.id, offer!)">
+    <p>status:<select name="" id="" [(ngModel)]="editableOffer.status">
       <option *ngFor="let state of environment.offerStates" value={{state}}>{{state}}</option>
     </select></p>  
     
