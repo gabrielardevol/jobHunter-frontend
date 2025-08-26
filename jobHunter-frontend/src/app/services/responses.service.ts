@@ -80,18 +80,27 @@ export class ResponsesService {
     });
   }
 
-  getResponses(responseId: string): Observable<Response[] | undefined> {
-    console.log("getting responses...")
-    return this.responses$.pipe(
-      map(responses => responses.filter(r => r.id === responseId))
-    );
-  }
-
-  getResponsesByOffer(offerId: string): Observable<Response[]> {
-  console.log("getting responses for offer", offerId);
+getResponses(responseId: string): Observable<Response[] | undefined> {
+  console.log("getting responses...");
   return this.responses$.pipe(
-    map(responses => responses.filter(r => r.offerId === offerId))
+    map(responses =>
+      responses
+        .filter(r => r.id === responseId)
+        .sort((a, b) => (a.createdAt?.getTime() ?? 0) - (b.createdAt?.getTime() ?? 0))
+    )
   );
 }
+
+getResponsesByOffer(offerId: string): Observable<Response[]> {
+  console.log("getting responses for offer", offerId);
+  return this.responses$.pipe(
+    map(responses =>
+      responses
+        .filter(r => r.offerId === offerId)
+        .sort((a, b) => (a.createdAt?.getTime() ?? 0) - (b.createdAt?.getTime() ?? 0))
+    )
+  );
+}
+
  
 }
