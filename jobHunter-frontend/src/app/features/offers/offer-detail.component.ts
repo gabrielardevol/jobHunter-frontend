@@ -15,28 +15,28 @@ import { FormsModule } from '@angular/forms';
 
   <div *ngIf="offer$ | async as offer">
     <button (click)="offerService.deleteOffer(offer!.id); globalStateStore.openOfferDetail(undefined)">delete</button>
-    <button (click)="globalStateStore.openOfferDetail(undefined)">close</button>
+    <button (click)="close()">{{ pendingChanges() ? 'close without saving' : 'close'}}</button>
 
     <h3>{{ offer!.company }} ({{ offer!.role }})</h3>     
     <p>Created At: {{ offer!.createdAt | date:'medium' }}</p>
 
-    <p>status:<select name="" id="" [(ngModel)]="offer!.status" (ngModelChange)="offerService.updateOffer(offer!.id, offer!)">
+    <p>status:<select name="" id="" [(ngModel)]="editableOffer!.status" (ngModelChange)="offerService.updateOffer(offer!.id, offer!)">
       <option *ngFor="let state of environment.offerStates" value={{state}}>{{state}}</option>
     </select></p>  
     
       <label>
         Location:
-        <input [(ngModel)]="offer.location" />
+        <input [(ngModel)]="editableOffer!.location" />
       </label>
 
       <label>
         Recruiter:
-        <input [(ngModel)]="offer.recruiter" />
+        <input [(ngModel)]="editableOffer!.recruiter" />
       </label>
 
       <label>
         Platform:
-        <input [(ngModel)]="offer.platform" />
+        <input [(ngModel)]="editableOffer!.platform" />
       </label>
 
       <legend>Payment Type</legend>
@@ -46,46 +46,46 @@ import { FormsModule } from '@angular/forms';
           type="radio"
           name="paymentType"
           [value]="t"
-          [(ngModel)]="offer.paymentType"
+          [(ngModel)]="editableOffer!.paymentType"
         />
         {{ t }}
       </label>
 
       <label>
         Salary Minimum:
-        <input type="number" [(ngModel)]="offer.salaryMinimum" />
+        <input type="number" [(ngModel)]="editableOffer!.salaryMinimum" />
       </label>
 
       <label>
         Salary Maximum:
-        <input type="number" [(ngModel)]="offer.salaryMaximum" />
+        <input type="number" [(ngModel)]="editableOffer!.salaryMaximum" />
       </label>
 
     <label>
       Weekly Hours:
-      <input type="number" [(ngModel)]="offer.weeklyHours" />
+      <input type="number" [(ngModel)]="editableOffer!.weeklyHours" />
     </label>
     <label>
       Duration (months):
-      <input type="number" [(ngModel)]="offer.durationMonths" />
+      <input type="number" [(ngModel)]="editableOffer!.durationMonths" />
     </label>
 
     <label>
       Experience Minimum:
-      <input type="number" [(ngModel)]="offer.experienceMinimum" />
+      <input type="number" [(ngModel)]="editableOffer!.experienceMinimum" />
     </label>
 
     <label>
       Experience Maximum:
-      <input type="number" [(ngModel)]="offer.experienceMaximum" />
+      <input type="number" [(ngModel)]="editableOffer!.experienceMaximum" />
     </label>
 
     <label>
       Skills:
-      <input type="text" [(ngModel)]="offer.skills" placeholder="skill1, skill2, ..." />
+      <input type="text" [(ngModel)]="editableOffer!.skills" placeholder="skill1, skill2, ..." />
     </label>
 
-    <button (click)="offerService.updateOffer(offer!.id, offer!)">Save changes</button>
+    <button  [disabled]="!pendingChanges()" (click)="saveChanges()">Save changes</button>
 
     <div *ngIf="offer!.responses?.length">
       <h4>Responses:</h4>
@@ -111,17 +111,45 @@ import { FormsModule } from '@angular/forms';
   styles: `label {display: block;}`
 })
 export class OfferDetailComponent {
+
   offer$: Observable<Offer | undefined>;
-  textSource$: Observable<TextSource | undefined>;
+  editableOffer: Offer | null = null;
+  originalOffer: Offer | null = null;
+  textSource$?: Observable<TextSource | undefined>;
   environment = environment;
 
-  constructor(public globalStateStore: GlobalStateService, public offerService: OffersService, public textSourceService: TextSourceService) {
-    this.offer$ = globalStateStore.viewingOffer$
-    this.textSource$ = this.offer$.pipe(
+  constructor(
+    public globalStateStore: GlobalStateService,
+    public offerService: OffersService,
+    public textSourceService: TextSourceService
+  ) {
+    this.offer$ = globalStateStore.viewingOffer$;
+
+    this.offer$.pipe(
       filter((offer): offer is Offer => !!offer),
+      tap(offer => {
+        this.originalOffer = offer;
+        this.editableOffer = { ...offer };
+      }),
       switchMap(offer => this.textSourceService.getTextSource(offer.id)),
       tap(response => console.log(response))
-    );
+    ).subscribe(response => {
+      this.textSource$ = new Observable<TextSource | undefined>(observer => observer.next(response));
+    });
+  }
 
+  saveChanges() {
+    if (!this.editableOffer) return;
+    this.offerService.updateOffer(this.editableOffer.id, this.editableOffer);
+    this.originalOffer = { ...this.editableOffer };
+  }
+
+  close() {
+
+    this.globalStateStore.openOfferDetail(undefined)
+  }
+
+  pendingChanges(): boolean {
+    return JSON.stringify(this.editableOffer) !== JSON.stringify(this.originalOffer);
   }
 }

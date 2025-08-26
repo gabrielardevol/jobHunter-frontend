@@ -5,14 +5,14 @@ import { OffersService } from '../../services/offers.service';
 import { debounceTime, Observable, of, switchMap, take, tap } from 'rxjs';
 import { LlmService } from '../../services/llm.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { CommonModule, AsyncPipe } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { GlobalStateService } from '../../services/global-state.store';
 import { TextSourceService } from '../../services/textSource.service';
 import { v4 as uuidv4 } from 'uuid';
 
 @Component({
   selector: 'app-offer-form',
-  imports: [ReactiveFormsModule, CommonModule , AsyncPipe],
+  imports: [ReactiveFormsModule, CommonModule],
   template: `
     <input [formControl]="llmControl" placeholder="Type something..." />
 
@@ -79,11 +79,9 @@ export class OfferFormComponent {
       experienceMinimum: [0, Validators.min(0)],
       experienceMaximum: [0, Validators.min(0)],
     });
-
   }
 
   ngOnInit(): void {
-
     this.textSource$
     .pipe(
       switchMap(text => this.llmService.promptOffer(text)),
@@ -95,12 +93,10 @@ export class OfferFormComponent {
   }
 
   onSubmit() {
- 
     this.offersService.addOffer(this.offerForm.value);
     this.textSourceService.addTextSource({
       content: this.llmControl.value, 
       entityId: this.offerForm.value.id });
-       
     this.llmControl.reset();
   }
 }
