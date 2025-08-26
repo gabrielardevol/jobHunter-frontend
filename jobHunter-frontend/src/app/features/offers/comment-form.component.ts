@@ -16,9 +16,6 @@ import { ModalService } from '../../services/modals.service';
   template: `
 
 
-<form [formGroup]="commentForm" (ngSubmit)="onSubmit()"> 
-  <textarea formControlName="content" placeholder="Comment content"></textarea>
-
   <div *ngIf="comments$ | async as comments">
     <ul>
       <li *ngFor="let comment of comments">
@@ -26,12 +23,16 @@ import { ModalService } from '../../services/modals.service';
       </li>
     </ul>
   </div>
+    
+  <form [formGroup]="commentForm" (ngSubmit)="onSubmit()"> 
+    <textarea formControlName="content" placeholder="Comment content"></textarea>
 
-  <button [disabled]="!commentForm.valid" type="submit">
-    Add Comment
-  </button>
-</form>
-<hr>
+
+    <button [disabled]="!commentForm.valid" type="submit">
+      Add Comment
+    </button>
+  </form>
+  <hr>
 
   `,
   styles: `textarea { width: 100%; height: 100px; }`

@@ -34,7 +34,7 @@ export class TextSourceService {
     );
   }
 
-    getResponseTextSource(id: string): Observable<TextSource | undefined> {
+  getResponseTextSource(id: string): Observable<TextSource | undefined> {
     return this.textSources$.pipe(
       map(textSources => textSources.find(ts => ts.responseId === id))
     );

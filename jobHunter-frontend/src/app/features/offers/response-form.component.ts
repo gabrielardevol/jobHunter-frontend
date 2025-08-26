@@ -104,7 +104,7 @@ export class ResponseFormComponent {
     this.responsesService.addResponse(this.responseForm.value as Response);
     this.textSourceService.addTextSource({
     content: this.llmControl.value, 
-    offerId: this.responseForm.value.id });
+    responseId: this.responseForm.value.id });
     this.llmControl.reset();
     this.modalService.close();
 

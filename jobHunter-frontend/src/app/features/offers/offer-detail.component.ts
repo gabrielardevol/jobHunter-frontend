@@ -25,95 +25,106 @@ import { CommentFormComponent } from "./comment-form.component";
     <p>status:<select name="" id="" [(ngModel)]="editableOffer.status">
       <option *ngFor="let state of environment.offerStates" value={{state}}>{{state}}</option>
     </select></p>  
+
+    <details>
+      <summary>details / update</summary>
+      
+        <label>
+          Location:
+          <input [(ngModel)]="editableOffer!.location" />
+        </label>
+
+        <label>
+          Recruiter:
+          <input [(ngModel)]="editableOffer!.recruiter" />
+        </label>
+
+        <label>
+          Platform:
+          <input [(ngModel)]="editableOffer!.platform" />
+        </label>
+
+        <legend>Payment Type</legend>
+
+        <label *ngFor="let t of  ['hour', 'day', 'month', 'year'];" style="margin-right: 1rem;">
+          <input
+            type="radio"
+            name="paymentType"
+            [value]="t"
+            [(ngModel)]="editableOffer!.paymentType"
+          />
+          {{ t }}
+        </label>
+
+        <label>
+          Salary Minimum:
+          <input type="number" [(ngModel)]="editableOffer!.salaryMinimum" />
+        </label>
+
+        <label>
+          Salary Maximum:
+          <input type="number" [(ngModel)]="editableOffer!.salaryMaximum" />
+        </label>
+
+      <label>
+        Weekly Hours:
+        <input type="number" [(ngModel)]="editableOffer!.weeklyHours" />
+      </label>
+      <label>
+        Duration (months):
+        <input type="number" [(ngModel)]="editableOffer!.durationMonths" />
+      </label>
+
+      <label>
+        Experience Minimum:
+        <input type="number" [(ngModel)]="editableOffer!.experienceMinimum" />
+      </label>
+
+      <label>
+        Experience Maximum:
+        <input type="number" [(ngModel)]="editableOffer!.experienceMaximum" />
+      </label>
+
+      <label>
+        Skills:
+        <input type="text" [(ngModel)]="editableOffer!.skills" placeholder="skill1, skill2, ..." />
+      </label>
+
+      <button  [disabled]="!pendingChanges()" (click)="saveChanges()">Save changes</button>
+    </details>
+
+    <details>
+      <summary>
+       Text Source:
+      </summary>     
+      <p *ngIf="textSource$ | async as textSource">{{textSource!.content}}</p>
     
-      <label>
-        Location:
-        <input [(ngModel)]="editableOffer!.location" />
-      </label>
+    </details>
+                  
+    <details>
+      <summary>
+        Responses
+      </summary> 
+      <li *ngFor="let response of responses$ | async">
+        <p><b>Response ID:</b> {{ response.id }}</p>
 
-      <label>
-        Recruiter:
-        <input [(ngModel)]="editableOffer!.recruiter" />
-      </label>
-
-      <label>
-        Platform:
-        <input [(ngModel)]="editableOffer!.platform" />
-      </label>
-
-      <legend>Payment Type</legend>
-
-      <label *ngFor="let t of  ['hour', 'day', 'month', 'year'];" style="margin-right: 1rem;">
-        <input
-          type="radio"
-          name="paymentType"
-          [value]="t"
-          [(ngModel)]="editableOffer!.paymentType"
-        />
-        {{ t }}
-      </label>
-
-      <label>
-        Salary Minimum:
-        <input type="number" [(ngModel)]="editableOffer!.salaryMinimum" />
-      </label>
-
-      <label>
-        Salary Maximum:
-        <input type="number" [(ngModel)]="editableOffer!.salaryMaximum" />
-      </label>
-
-    <label>
-      Weekly Hours:
-      <input type="number" [(ngModel)]="editableOffer!.weeklyHours" />
-    </label>
-    <label>
-      Duration (months):
-      <input type="number" [(ngModel)]="editableOffer!.durationMonths" />
-    </label>
-
-    <label>
-      Experience Minimum:
-      <input type="number" [(ngModel)]="editableOffer!.experienceMinimum" />
-    </label>
-
-    <label>
-      Experience Maximum:
-      <input type="number" [(ngModel)]="editableOffer!.experienceMaximum" />
-    </label>
-
-    <label>
-      Skills:
-      <input type="text" [(ngModel)]="editableOffer!.skills" placeholder="skill1, skill2, ..." />
-    </label>
-
-    <button  [disabled]="!pendingChanges()" (click)="saveChanges()">Save changes</button>
-
+        <ng-container *ngIf="getTextSourceForResponse(response.id) | async as textSource">
+          <p><b>Content:</b> {{ textSource.content }}</p>
+          <p><b>CreatedAt:</b> {{ textSource.createdAt | date:'short' }}</p>
+        </ng-container>
+      </li>
+        
+    </details>
+    
     <div >
-      <h4>Responses:</h4>
 
-      <ul>
-        <li *ngFor="let response of responses$ | async">
-          {{ response.id }}
-                 <div *ngIf="getTextSourceForResponse(response.id) | async as textSource">
-              TextSource: {{ textSource.content }}
-            </div>
-        </li>
-
-     
-      </ul>
-
-
+    
     <div *ngIf="offer!.comments?.length">
       <h4>Comments:</h4>
       <ul>
       </ul>
     </div>
 
-    <div>
-      <h4>Text Source:</h4>
-      <p *ngIf="textSource$ | async as textSource">{{textSource!.content}}</p>
-    </div>
 
     <app-comment-form [offerId]="offer.id"></app-comment-form>
     <hr>
@@ -153,7 +164,6 @@ export class OfferDetailComponent {
     if (!this.editableOffer) return;
     this.offerService.updateOffer(this.editableOffer.id, this.editableOffer);
     this.offer = Object.assign({}, this.editableOffer);
-
   }
 
   close() {
@@ -163,9 +173,12 @@ export class OfferDetailComponent {
   pendingChanges(): boolean {
     return JSON.stringify(this.editableOffer) !== JSON.stringify(this.offer);
   }
-
     
   getTextSourceForResponse(responseId: string): Observable<TextSource | undefined> {
-    return this.textSourceService.getOfferTextSource(responseId);
+    return this.textSourceService.getResponseTextSource(responseId);
+  }
+
+  getTextSourceForOffer(offerId: string): Observable<TextSource | undefined> {
+    return this.textSourceService.getOfferTextSource(offerId);
   }
 }
