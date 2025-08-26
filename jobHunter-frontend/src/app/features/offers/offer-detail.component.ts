@@ -131,8 +131,8 @@ export class OfferDetailComponent {
         this.originalOffer = offer;
         this.editableOffer = { ...offer };
       }),
-      switchMap(offer => this.textSourceService.getTextSource(offer.id)),
-      tap(response => console.log(response))
+      switchMap(offer => this.textSourceService.getOfferTextSource(offer.id)),
+//      tap(response => console.log(response))
     ).subscribe(response => {
       this.textSource$ = new Observable<TextSource | undefined>(observer => observer.next(response));
     });
@@ -145,8 +145,7 @@ export class OfferDetailComponent {
   }
 
   close() {
-
-    this.globalStateStore.openOfferDetail(undefined)
+    this.globalStateStore.closeOfferDetail()
   }
 
   pendingChanges(): boolean {

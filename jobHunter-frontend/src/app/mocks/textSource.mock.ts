@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 export const TEXT_SOURCE: TextSource[] = [
  {
    id: 'abc',
-   entityId: '123',
+   offerId: '123',
    content: "lorem ipsum dolor sit amet",
    createdAt: new Date()
  }  

@@ -60,10 +60,10 @@ export class TextSourceService {
     };
   }
 
-  getTextSource(id: string): Observable<TextSource | undefined> {
+  getOfferTextSource(id: string): Observable<TextSource | undefined> {
     console.log('getTextSource' , id)
     return this.textSources$.pipe(
-        map(textSources => textSources.find(textSource => textSource.entityId == id))
+        map(textSources => textSources.find(textSource => textSource.offerId == id))
       );
   }
 

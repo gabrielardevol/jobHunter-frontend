@@ -96,7 +96,7 @@ export class OfferFormComponent {
     this.offersService.addOffer(this.offerForm.value);
     this.textSourceService.addTextSource({
       content: this.llmControl.value, 
-      entityId: this.offerForm.value.id });
+      offerId: this.offerForm.value.id });
     this.llmControl.reset();
   }
 }
