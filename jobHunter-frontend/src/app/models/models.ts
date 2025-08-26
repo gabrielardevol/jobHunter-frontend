@@ -55,7 +55,9 @@ export interface User {
 export interface Comment {
     id: string,
     createdAt: Date,
-    content: string
+    content: string,
+    responseId?: string,
+    offerId?: string
 }
 
 export interface WorkingExperience {

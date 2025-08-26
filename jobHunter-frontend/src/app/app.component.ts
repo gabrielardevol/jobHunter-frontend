@@ -6,6 +6,7 @@ import { NgIf } from "@angular/common";
 import { CommonModule } from '@angular/common';
 import { SnackbarService } from './services/snack.service';
 import { ModalService } from './services/modal.service';
+import { ResponseFormComponent } from './features/offers/response-form.component';
 
 @Component({
   selector: 'app-root',
@@ -14,6 +15,7 @@ import { ModalService } from './services/modal.service';
   styleUrl: './app.component.scss'
 })
 export class AppComponent {
+
   title = 'jobHunter-frontend';
   @ViewChild('modalHost', { read: ViewContainerRef, static: true })
   viewContainerRef!: ViewContainerRef;
@@ -41,6 +43,10 @@ export class AppComponent {
   openOfferForm() {
     this.modalService.open(OfferFormComponent)
   }
+
+  openResponseForm() {
+    this.modalService.open(ResponseFormComponent)
+}
 
   close() {
     this.modalService.close();

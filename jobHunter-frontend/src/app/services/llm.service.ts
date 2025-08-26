@@ -21,6 +21,7 @@ export class LlmService {
     max_tokens: 1000,
   };
 
+
   constructor(public httpClient: HttpClient) {
   }
   
@@ -49,8 +50,28 @@ export class LlmService {
       map(response => JSON.parse(response.choices[0].message.content.match(/{[\s\S]*}/))))
   }
   
-  promptResponse() {
-   
+  promptResponse(responseText: string): Observable<Partial<Response>> {
+      const headers = this.headers;
+    const body = {
+      ...this.body,
+      messages: [{
+        ...this.body.messages[0],
+        content: this.bodyContentBase + this.responseInterface
+        + `. Text source is:` 
+        + responseText 
+        + `. An example of desired output is: ` 
+        + this.responseExample
+        }
+      ]
+    } 
+    return this.httpClient.post<any>(environment.apiUrl, 
+    body, 
+    { headers }
+    ).pipe(
+//      tap(response => console.log('server response:', response.choices[0].message.content)),
+      tap(response => console.log('server response regex:', response.choices[0].message.content.match(/{[\s\S]*}/))),
+      map(response => JSON.parse(response.choices[0].message.content.match(/{[\s\S]*}/))))
+
   }
   
   bodyContentBase: string = `
@@ -103,5 +124,8 @@ export class LlmService {
     "experienceMinimum": null,
     "experienceMaximum": null,
   }`
+
+  responseExample: string = '';
+  responseInterface: string = '';
   
 }
