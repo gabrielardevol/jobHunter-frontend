@@ -2,7 +2,7 @@ import { Component, DestroyRef } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { debounceTime, map, Observable, switchMap } from 'rxjs';
+import { combineLatest, debounceTime, map, Observable, startWith, switchMap } from 'rxjs';
 import { v4 as uuidv4 } from 'uuid';
 
 import { ResponsesService } from '../../services/response.service';
@@ -68,17 +68,22 @@ export class ResponseFormComponent {
       type: ['', Validators.required],
       date: [undefined],
       createdAt: [new Date()],
+      company: [''],
       offer: ['', Validators.required] // aquí tens l’oferta associada
     });
-      this.sortedOffers$ = this.offersService.offers$.pipe(
-      map(offers =>
+    
+    const companyControl = this.responseForm.get('company');
+
+    this.sortedOffers$ = combineLatest([
+      this.offersService.offers$,
+      companyControl!.valueChanges.pipe(startWith(companyControl!.value))
+    ]).pipe(
+      map(([offers, company]) =>
         [...offers].sort(
-          (a, b) =>
-            this.similarity(b.company ?? '', this.responseForm.value.company) -
-            this.similarity(a.company ?? '',  this.responseForm.value.company)
+          (a, b) => this.similarity(b.company ?? '', company) - this.similarity(a.company ?? '', company)
         )
       )
-);
+    );
 
   }
 

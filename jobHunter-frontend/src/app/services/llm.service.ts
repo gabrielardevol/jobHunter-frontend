@@ -57,9 +57,9 @@ export class LlmService {
       messages: [{
         ...this.body.messages[0],
         content: this.bodyContentBase + this.responseInterface
-        + `. Text source is:` 
+        + `.I want you to classify the type of this reply to a job application. Text source is:` 
         + responseText 
-        + `. An example of desired output is: ` 
+        + `. Type can't be null. An example of desired output is: ` 
         + this.responseExample
         }
       ]
@@ -125,7 +125,24 @@ export class LlmService {
     "experienceMaximum": null,
   }`
 
-  responseExample: string = '';
-  responseInterface: string = '';
+  responseExample: string = `
+  {
+    "type": "interview",
+    "date": "6/24/2025",
+    "recruiter": "John Doe",
+    "email": "johndoe@gmail.com",
+    "company": "ACME",
+  }
+  `;
+  responseInterface: string = `
+  {
+      type: "interview" | "assignment" | "contract" | "rejection",
+      date: Date | null,
+      recruiter: string,
+      email: string,
+      telephone: string,
+      company: string
+    
+  }`;
   
 }

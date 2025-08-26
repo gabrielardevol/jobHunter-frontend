@@ -32,7 +32,11 @@ export interface Response {
     type: tResponseType,
     date: Date | undefined,
     createdAt: Date,
-    offer: Offer
+    offerId: string,
+    recruiter: string,
+    email: string,
+    telephone: string
+
 }
 
 export interface TextSource {
