@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, map, Observable } from 'rxjs';
 import { v4 as uuidv4 } from 'uuid';
 import { Response } from '../models/models';
-import { SnackbarService } from './snack.service';
-import { ResponsesRepository } from './response.repository';
+import { SnackbarService } from './snackbars.service';
+import { ResponsesRepository } from './responses.repository';
 
 @Injectable({
   providedIn: 'root'

@@ -6,9 +6,9 @@ import { debounceTime, Observable, of, switchMap, take, tap } from 'rxjs';
 import { LlmService } from '../../services/llm.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
-import { TextSourceService } from '../../services/textSource.service';
+import { TextSourceService } from '../../services/textSources.service';
 import { v4 as uuidv4 } from 'uuid';
-import { ModalService } from '../../services/modal.service';
+import { ModalService } from '../../services/modals.service';
 
 @Component({
   selector: 'app-offer-form',

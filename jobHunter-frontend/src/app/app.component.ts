@@ -4,8 +4,8 @@ import { OfferFormComponent } from "./features/offers/offer-form.component";
 import { OffersService } from './services/offers.service';
 import { NgIf } from "@angular/common";
 import { CommonModule } from '@angular/common';
-import { SnackbarService } from './services/snack.service';
-import { ModalService } from './services/modal.service';
+import { SnackbarService } from './services/snackbars.service';
+import { ModalService } from './services/modals.service';
 import { ResponseFormComponent } from './features/offers/response-form.component';
 
 @Component({

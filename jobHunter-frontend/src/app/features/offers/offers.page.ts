@@ -5,7 +5,7 @@ import { AsyncPipe } from "@angular/common";
 import { Offer } from '../../models/models';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { combineLatest, map, Observable, startWith } from 'rxjs';
-import { ModalService } from '../../services/modal.service';
+import { ModalService } from '../../services/modals.service';
 import { OfferDetailComponent } from './offer-detail.component';
 
 @Component({

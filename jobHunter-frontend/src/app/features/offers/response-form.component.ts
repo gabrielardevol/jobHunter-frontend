@@ -5,13 +5,13 @@ import { CommonModule } from '@angular/common';
 import { combineLatest, debounceTime, map, Observable, startWith, switchMap } from 'rxjs';
 import { v4 as uuidv4 } from 'uuid';
 
-import { ResponsesService } from '../../services/response.service';
+import { ResponsesService } from '../../services/responses.service';
 import { LlmService } from '../../services/llm.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { ModalService } from '../../services/modal.service';
+import { ModalService } from '../../services/modals.service';
 import { Offer, Response, TextSource, tResponseType } from '../../models/models';
 import { OffersService } from '../../services/offers.service';
-import { TextSourceService } from '../../services/textSource.service';
+import { TextSourceService } from '../../services/textSources.service';
 
 @Component({
   selector: 'app-response-form',

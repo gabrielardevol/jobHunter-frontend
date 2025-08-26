@@ -4,10 +4,10 @@ import { CommonModule } from '@angular/common';
 import { debounceTime, Observable, switchMap } from 'rxjs';
 import { v4 as uuidv4 } from 'uuid';
 
-import { CommentsService } from '../../services/comment.service';
+import { CommentsService } from '../../services/comments.service';
 import { LlmService } from '../../services/llm.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { ModalService } from '../../services/modal.service';
+import { ModalService } from '../../services/modals.service';
 
 @Component({
   selector: 'app-comment-form',

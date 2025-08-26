@@ -3,11 +3,11 @@ import { Offer, TextSource, Response } from '../../models/models';
 import { CommonModule } from '@angular/common';
 import { OffersService } from '../../services/offers.service';
 import { filter, Observable, switchMap, tap } from 'rxjs';
-import { TextSourceService } from '../../services/textSource.service';
+import { TextSourceService } from '../../services/textSources.service';
 import { environment } from '../../../environments/environment';
 import { FormsModule } from '@angular/forms';
-import { ModalService } from '../../services/modal.service';
-import { ResponsesService } from '../../services/response.service';
+import { ModalService } from '../../services/modals.service';
+import { ResponsesService } from '../../services/responses.service';
 
 @Component({
   selector: 'app-offer-detail',

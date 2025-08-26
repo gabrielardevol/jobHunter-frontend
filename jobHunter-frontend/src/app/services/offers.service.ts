@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, map, Observable } from 'rxjs';
 import { v4 as uuidv4 } from 'uuid';
 import { Offer } from '../models/models';
-import { SnackbarService } from './snack.service';
+import { SnackbarService } from './snackbars.service';
 import { OffersRepository } from './offers.repository';
 
 @Injectable({
