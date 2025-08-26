@@ -36,11 +36,11 @@ export interface Response {
 }
 
 export interface TextSource {
-    id: string,
+    id?: string,
     content: string,
-    createdAt: Date,
-    offerId?: string,
-    response?: Response
+    createdAt?: Date,
+    entityId: string,
+    deletedAt?: Date
 }
 
 export interface User {

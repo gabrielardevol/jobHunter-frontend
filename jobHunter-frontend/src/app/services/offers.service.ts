@@ -1,113 +1,83 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, map, Observable } from 'rxjs';
-import { Offer } from '../models/models';
 import { v4 as uuidv4 } from 'uuid';
-import { environment } from '../../environments/environment.development';
+import { Offer } from '../models/models';
 import { SnackbarService } from './snack.service';
-import { openDB, IDBPDatabase, DBSchema } from 'idb';
-import { OFFERS } from '../offers.mock';
-
-interface OffersDB extends DBSchema {
-  offers: {
-    key: string;
-    value: Offer;
-    indexes: { 'by-status': string };
-  };
-}
+import { OffersRepository } from './offers.repository';
 
 @Injectable({
   providedIn: 'root'
 })
 export class OffersService {
-  private db: IDBPDatabase<OffersDB> | null = null;
   private offersSubject = new BehaviorSubject<Offer[]>([]);
   offers$: Observable<Offer[]> = this.offersSubject.asObservable();
 
-  constructor(private snackbarService: SnackbarService) {
-    this.initDB();
+  constructor(
+    private snackbarService: SnackbarService,
+    private offersRepo: OffersRepository
+  ) {
+    this.init();
   }
 
-  private async initDB() {
-    if (environment.mockData) {
-      this.offersSubject.next([...OFFERS]);
-      return;
-    }
-
-    this.db = await openDB<OffersDB>('offersDB', 1, {
-      upgrade(db) {
-        if (!db.objectStoreNames.contains('offers')) {
-          const store = db.createObjectStore('offers', { keyPath: 'id' });
-          store.createIndex('by-status', 'status');
-        }
-      }
-    });
-
+  private async init() { //async loading db
+    await this.offersRepo.init();
     await this.refreshOffers();
-    console.log('DB correctly opened');
   }
 
   private async refreshOffers() {
-    if (!this.db) return;
-    const allOffers = await this.db.getAll('offers');
+    console.log("refreshOffers")
+    const allOffers = await this.offersRepo.getAll();
     this.offersSubject.next(allOffers.filter(o => !o.deletedAt));
   }
 
   async addOffer(offer: Offer) {
     offer.id = uuidv4();
     offer.createdAt = new Date();
-    offer.status = "waiting";
+    offer.status = 'waiting';
 
-    const current = this.offersSubject.value;
-    this.offersSubject.next([...current, offer]);
+    await this.offersRepo.save(offer);
+    await this.refreshOffers();
 
-    if (!this.db) return;
-    await this.db.put('offers', offer);
-    console.log('Offer saved to IndexedDB');
+    this.snackbarService.addSnackbar({
+      message: 'Offer has been created',
+    });
   }
 
-async updateOffer(id: string, updatedOffer: Offer) {
-  if (!this.db) return;
+  async updateOffer(id: string, updatedOffer: Offer) {
+    updatedOffer.id = updatedOffer.id ?? id;
+    await this.offersRepo.save(updatedOffer);
+    await this.refreshOffers();
 
-  updatedOffer.id = updatedOffer.id ?? id;
-
-  await this.db.put('offers', updatedOffer);
-
-  const current = this.offersSubject.value;
-  this.offersSubject.next(current.map(o => o.id === id ? updatedOffer : o));
-  console.log(`Offer ${id} updated`);
-}
-
+    this.snackbarService.addSnackbar({
+      message: 'Offer has been updated',
+    });
+  }
 
   async deleteOffer(id: string) {
-    if (!this.db) return;
-
-    const offer = await this.db.get('offers', id);
+    const offer = await this.offersRepo.getById(id);
     if (!offer) return;
 
     offer.deletedAt = new Date();
-    await this.db.put('offers', offer);
+    await this.offersRepo.save(offer);
+    await this.refreshOffers();
 
     this.snackbarService.addSnackbar({
-      id: uuidv4(),
       message: 'Offer has been deleted',
       action: () => this.restoreOffer(id)
     });
-
-    await this.refreshOffers();
-    console.log(`Offer ${id} soft-deleted`);
   }
 
   async restoreOffer(id: string) {
-    if (!this.db) return;
-
-    const offer = await this.db.get('offers', id);
+    const offer = await this.offersRepo.getById(id);
     if (!offer) return;
 
     offer.deletedAt = undefined;
-    await this.db.put('offers', offer);
-
+    await this.offersRepo.save(offer);
     await this.refreshOffers();
-    console.log(`Offer ${id} restored`);
+
+    this.snackbarService.addSnackbar({
+      message: 'Offer has been restored',
+    });
   }
 
   getOffer(offerId: string): Observable<Offer | undefined> {

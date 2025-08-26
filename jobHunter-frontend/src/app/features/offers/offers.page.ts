@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
-import { OffersService } from './services/offers.service';
+import { OffersService } from '../../services/offers.service';
 import { NgForOf } from "@angular/common";
 import { AsyncPipe } from "@angular/common";
-import { Offer } from './models/models';
+import { Offer } from '../../models/models';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { combineLatest, map, Observable, startWith } from 'rxjs';
-import { GlobalStateService } from './services/global-state.store';
+import { GlobalStateService } from '../../services/global-state.store';
 
 @Component({
   selector: 'app-offers',
@@ -38,8 +38,8 @@ import { GlobalStateService } from './services/global-state.store';
       {{offer.recruiter}}
       {{offer.skills}}
       {{offer.status}}
-      <button (click)="globalStateStore.setViewingOffer(offer)">view</button>
-      <button (click)="globalStateStore.setUpdatingOffer(offer.id)">update</button>
+      <button (click)="globalStateStore.openOfferDetail(offer)">view</button>
+      <button (click)="globalStateStore.openUpdateOffer(offer.id)">update</button>
       <button (click)="offersService.deleteOffer(offer!.id);">delete</button>
       <hr>
     </div>

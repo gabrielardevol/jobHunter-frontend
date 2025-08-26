@@ -1,12 +1,14 @@
-import { Component, DestroyRef } from '@angular/core';
+import { Component, DestroyRef, EventEmitter, Output } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
-import { OffersService } from './services/offers.service';
+import { OffersService } from '../../services/offers.service';
 import { debounceTime, Observable, of, switchMap, take, tap } from 'rxjs';
-import { LlmService } from './services/llm.service';
+import { LlmService } from '../../services/llm.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule, AsyncPipe } from '@angular/common';
-import { GlobalStateService } from './services/global-state.store';
+import { GlobalStateService } from '../../services/global-state.store';
+import { TextSourceService } from '../../services/textSource.service';
+import { v4 as uuidv4 } from 'uuid';
 
 @Component({
   selector: 'app-offer-form',
@@ -42,27 +44,28 @@ import { GlobalStateService } from './services/global-state.store';
       <input formControlName="experienceMinimum" type="number" placeholder="Min experience" />
       <input formControlName="experienceMaximum" type="number" placeholder="Max experience" />
 
-      <button *ngIf="!(offerId$ | async)" type="button" (click)="globalStateStore.setUpdatingOffer(undefined)">Cancel</button>
+      <button type="button" (click)="globalStateStore.closeUpdateOffer(); closeCreateOffer.emit()">Cancel</button>
       <button [disabled]="!offerForm.valid" type="submit">
         {{ (offerId$ | async) ? 'Update Offer' : 'Create Offer'}}
       </button>
     </form>
+    <hr>
   `,
 
   styles: ``
 })
 export class OfferFormComponent {
+  @Output() closeCreateOffer = new EventEmitter<any>;
   offerId$: Observable<string | undefined>; //used as 'update'
   offerForm: FormGroup;
   llmControl: FormControl = new FormControl;
   textSource$: Observable<string> = this.llmControl.valueChanges.pipe(
-    debounceTime(1000),
-//    tap(value => console.log('Valor actual del control:', value))
+    debounceTime(700),
   );
   
-  constructor(private fb: FormBuilder, public globalStateStore: GlobalStateService, public offersService: OffersService, public llmService: LlmService, private destroyRef: DestroyRef) {
-//    console.log('offerId from offer-form', this.offerId);
+  constructor(private fb: FormBuilder, public textSourceService: TextSourceService, public globalStateStore: GlobalStateService, public offersService: OffersService, public llmService: LlmService, private destroyRef: DestroyRef) {
     this.offerForm = this.fb.group({
+      id: uuidv4(),
       company: ['', Validators.required],
       role: ['', Validators.required],
       location: [''],
@@ -79,10 +82,10 @@ export class OfferFormComponent {
     });
 
     this.offerId$ = globalStateStore.updatingOffer$;
-    
   }
 
   ngOnInit(): void {
+
     this.offerId$
     .pipe(
       switchMap(id => id ? this.offersService.getOffer(id) : of(undefined)),
@@ -106,17 +109,20 @@ export class OfferFormComponent {
   }
 
   onSubmit() {
-
     this.offerId$.pipe(take(1)).subscribe(offerId => {
       if (offerId) {
         this.offersService.updateOffer(offerId, this.offerForm.value);
       } else {
         this.offersService.addOffer(this.offerForm.value);
+        this.textSourceService.addTextSource({
+          content: this.llmControl.value, 
+          entityId: this.offerForm.value.id 
+        })
       }
       this.offerForm.reset();
     });
 
-    this.globalStateStore.setUpdatingOffer(undefined);
+    this.globalStateStore.closeUpdateOffer();
     this.llmControl.reset();
   }
 }

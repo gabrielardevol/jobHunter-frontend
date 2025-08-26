@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
-import { OffersPage } from './offers.page';
-import { DashboardPage } from './dashboard.page';
-import { CalendarPage } from './calendar.page';
+import { OffersPage } from './features/offers/offers.page';
+import { DashboardPage } from './features/dashboard/dashboard.page';
+import { CalendarPage } from './features/calendar/calendar.page';
 
 export const routes: Routes = [
     {path: 'offers', component: OffersPage},

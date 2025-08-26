@@ -7,19 +7,25 @@ import { Offer } from '../models/models';
 })
 export class GlobalStateService {
 
-  private updatingOfferSubject = new BehaviorSubject<string | undefined>(undefined);
-  updatingOffer$: Observable<string | undefined> = this.updatingOfferSubject.asObservable();
+  private offerToUpdateSubject = new BehaviorSubject<string | undefined>(undefined);
+  updatingOffer$: Observable<string | undefined> = this.offerToUpdateSubject.asObservable();
 
   private viewingOfferSubject = new BehaviorSubject<Offer | undefined>(undefined);
   viewingOffer$: Observable<Offer | undefined> = this.viewingOfferSubject.asObservable();
 
-  constructor() {}
-
-  setUpdatingOffer(id: string | undefined) {
-    this.updatingOfferSubject.next(id);
+  openUpdateOffer(id: string | undefined) {
+    this.offerToUpdateSubject.next(id);
   }
 
-  setViewingOffer(offer: Offer | undefined) {
+  openOfferDetail(offer: Offer | undefined) {
     this.viewingOfferSubject.next(offer);
+  }
+
+  closeUpdateOffer(){
+    this.offerToUpdateSubject.next(undefined);
+  }
+
+  closeOfferDetail(){
+    this.viewingOfferSubject.next(undefined);
   }
 }

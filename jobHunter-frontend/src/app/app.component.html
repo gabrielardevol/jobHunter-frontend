@@ -6,19 +6,21 @@
       <li><a routerLink="/offers">Offers</a></li>
       <li><a routerLink="/calendar">Calendar</a></li>
     </ul>
-    <button>new offer</button>
+    <button (click)="creatingOffer = true">new offer</button>
     <button>new response</button>
   </aside>
   <main>
 
-    <app-offer-form></app-offer-form>
-    <hr>
-    <app-offer-detail  *ngIf="globalStateStore.viewingOffer$ | async as offer"/>
+    <app-offer-form *ngIf="(globalStateStore.updatingOffer$ | async) || creatingOffer" 
+    (closeCreateOffer)="creatingOffer = false;"></app-offer-form>
+  
+    <app-offer-detail *ngIf="globalStateStore.viewingOffer$ | async as offer"/>
     <router-outlet></router-outlet>
-    <button (click)="showTestSnackbar()">create snackbar</button>
+
   <div *ngFor="let snack of snackbarService.snackbars$ | async">
   <span>{{ snack.message }}</span>
-  <button *ngIf="snack.action" (click)="snack.action(); snackbarService.removeSnackbar(snack.id)">Undo</button>
+  <button *ngIf="snack.action" (click)="snack.action(); snackbarService.removeSnackbar(snack.id!)">Undo</button>
+  <button (click)="snackbarService.removeSnackbar(snack.id!)">X</button>
 </div>
   </main>
 </div> 

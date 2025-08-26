@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
 import { RouterOutlet , RouterModule } from '@angular/router';
-import { OffersPage } from './offers.page';
-import { OfferFormComponent } from "./offer-form.component";
+import { OffersPage } from './features/offers/offers.page';
+import { OfferFormComponent } from "./features/offers/offer-form.component";
 import { OffersService } from './services/offers.service';
-import { OfferDetailComponent } from "./offer-detail.component";
+import { OfferDetailComponent } from "./features/offers/offer-detail.component";
 import { NgIf } from "@angular/common";
 import { Offer } from './models/models';
 import { CommonModule } from '@angular/common';
@@ -21,6 +21,7 @@ export class AppComponent {
   title = 'jobHunter-frontend';
   updatingOffer: string | undefined = undefined;
   viewingOffer: any;
+  creatingOffer: boolean = false;
 
   constructor(public offersService: OffersService, 
     public globalStateStore: GlobalStateService,

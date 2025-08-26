@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, map, Observable, of } from 'rxjs';
 import { Offer, TextSource } from '../models/models';
-import { OFFERS } from '../offers.mock';
+import { OFFERS } from '../mocks/offers.mock';
 import { v4 as uuidv4 } from 'uuid';
 import { environment } from '../../environments/environment.development';
+import { TEXT_SOURCE } from '../mocks/textSource.mock';
 @Injectable({
   providedIn: 'root'
 })
@@ -39,7 +40,7 @@ export class TextSourceService {
   }
 
   fetchTextSources() {
-//    if (environment.mockData) this.textSourceSubject.next([...OFFERS]);
+    if (environment.mockData) this.textSourceSubject.next([...TEXT_SOURCE]);
     
 
     if (!this.db) return;
@@ -59,25 +60,26 @@ export class TextSourceService {
     };
   }
 
-  getTextSource(offerId: string): Observable<TextSource | undefined> {
+  getTextSource(id: string): Observable<TextSource | undefined> {
+    console.log('getTextSource' , id)
     return this.textSources$.pipe(
-        map(textSources => textSources.find(textSource => textSource.offerId === offerId))
+        map(textSources => textSources.find(textSource => textSource.entityId == id))
       );
   }
 
-  addOffer(offer: TextSource) {
-  //  offer.id = uuidv4();
-   // offer.createdAt = new Date();
-   // offer.status = "waiting";
+  addTextSource(textSource: TextSource) {
+    textSource.id = uuidv4();
+    textSource.createdAt = new Date();
     
-    const currentOffers = this.textSourceSubject.value;
-    this.textSourceSubject.next([...currentOffers, offer]);
+    const currentState = this.textSourceSubject.value;
+    this.textSourceSubject.next([...currentState, textSource]);
 
+    console.log(textSource)
     if (!this.db) return;
 
     const tx = this.db.transaction('textSources', 'readwrite');
     const store = tx.objectStore('textSources');
-    store.put(offer);
+    store.put(textSource);
 
     tx.oncomplete = () => console.log('textSources saved to IndexedDB');
     tx.onerror = (e) => console.error('Error saving textSources to IndexedDB', e);
