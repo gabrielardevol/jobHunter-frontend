@@ -30,6 +30,7 @@ export class ResponsesService {
   }
 
   async addResponse(response: Response) {
+    console.log(response);
     response.id = uuidv4();
     response.createdAt = new Date();
 
@@ -79,11 +80,18 @@ export class ResponsesService {
     });
   }
 
-  getResponse(responseId: string): Observable<Response | undefined> {
+  getResponses(responseId: string): Observable<Response[] | undefined> {
+    console.log("getting responses...")
     return this.responses$.pipe(
-      map(responses => responses.find(r => r.id === responseId))
+      map(responses => responses.filter(r => r.id === responseId))
     );
   }
 
+  getResponsesByOffer(offerId: string): Observable<Response[]> {
+  console.log("getting responses for offer", offerId);
+  return this.responses$.pipe(
+    map(responses => responses.filter(r => r.offerId === offerId))
+  );
+}
  
 }

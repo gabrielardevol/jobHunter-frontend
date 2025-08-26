@@ -34,6 +34,12 @@ export class TextSourceService {
     );
   }
 
+    getResponseTextSource(id: string): Observable<TextSource | undefined> {
+    return this.textSources$.pipe(
+      map(textSources => textSources.find(ts => ts.responseId === id))
+    );
+  }
+
   async addTextSource(textSource: TextSource): Promise<void> {
     textSource.id = uuidv4();
     textSource.createdAt = new Date();

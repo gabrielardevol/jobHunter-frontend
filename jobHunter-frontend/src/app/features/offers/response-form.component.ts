@@ -9,8 +9,9 @@ import { ResponsesService } from '../../services/response.service';
 import { LlmService } from '../../services/llm.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ModalService } from '../../services/modal.service';
-import { Offer, Response, tResponseType } from '../../models/models';
+import { Offer, Response, TextSource, tResponseType } from '../../models/models';
 import { OffersService } from '../../services/offers.service';
+import { TextSourceService } from '../../services/textSource.service';
 
 @Component({
   selector: 'app-response-form',
@@ -31,7 +32,7 @@ import { OffersService } from '../../services/offers.service';
       <input formControlName="date" type="date" placeholder="Date" />
 
       <!-- Aquí pots mostrar o seleccionar l'offer associada -->
-    <select formControlName="offer">
+    <select formControlName="offerId">
       <option *ngFor="let offer of sortedOffers$ | async" [value]="offer.id">
         {{ offer.role }} at {{ offer.company }} | {{ offer.createdAt | date:'shortDate' }}
       </option>
@@ -61,7 +62,8 @@ export class ResponseFormComponent {
     private llmService: LlmService,
     private destroyRef: DestroyRef,
     private modalService: ModalService,
-    private offersService: OffersService
+    private offersService: OffersService,
+    private textSourceService: TextSourceService
   ) {
     this.responseForm = this.fb.group({
       id: uuidv4(),
@@ -69,7 +71,7 @@ export class ResponseFormComponent {
       date: [undefined],
       createdAt: [new Date()],
       company: [''],
-      offer: ['', Validators.required] // aquí tens l’oferta associada
+      offerId: ['', Validators.required] // aquí tens l’oferta associada
     });
     
     const companyControl = this.responseForm.get('company');
@@ -100,6 +102,9 @@ export class ResponseFormComponent {
 
   onSubmit() {
     this.responsesService.addResponse(this.responseForm.value as Response);
+     this.textSourceService.addTextSource({
+      content: this.llmControl.value, 
+      offerId: this.responseForm.value.id });
     this.llmControl.reset();
   }
 

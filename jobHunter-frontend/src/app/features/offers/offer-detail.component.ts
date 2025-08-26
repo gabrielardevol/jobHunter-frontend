@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Inject, Input, Output } from '@angular/core';
-import { Offer, TextSource } from '../../models/models';
+import { Offer, TextSource, Response } from '../../models/models';
 import { CommonModule } from '@angular/common';
 import { OffersService } from '../../services/offers.service';
 import { filter, Observable, switchMap, tap } from 'rxjs';
@@ -7,6 +7,7 @@ import { TextSourceService } from '../../services/textSource.service';
 import { environment } from '../../../environments/environment';
 import { FormsModule } from '@angular/forms';
 import { ModalService } from '../../services/modal.service';
+import { ResponsesService } from '../../services/response.service';
 
 @Component({
   selector: 'app-offer-detail',
@@ -87,11 +88,20 @@ import { ModalService } from '../../services/modal.service';
 
     <button  [disabled]="!pendingChanges()" (click)="saveChanges()">Save changes</button>
 
-    <div *ngIf="offer!.responses?.length">
+    <div >
       <h4>Responses:</h4>
+
       <ul>
+        <li *ngFor="let response of responses$ | async">
+          {{ response.id }}
+                 <div *ngIf="getTextSourceForResponse(response.id) | async as textSource">
+              TextSource: {{ textSource.content }}
+            </div>
+        </li>
+
+     
       </ul>
-    </div>
+
 
     <div *ngIf="offer!.comments?.length">
       <h4>Comments:</h4>
@@ -114,6 +124,8 @@ export class OfferDetailComponent {
 
   editableOffer: Offer | undefined;
   textSource$?: Observable<TextSource | undefined>;
+  responses$?: Observable<Response[] | undefined>;
+
   @Input() offer: Offer | undefined;
 
   environment = environment;
@@ -121,12 +133,17 @@ export class OfferDetailComponent {
   constructor(
     public offerService: OffersService,
     public textSourceService: TextSourceService,
-    public modalService: ModalService
+    public modalService: ModalService,
+    public responseService: ResponsesService
   ) {
   }
   
   ngOnInit() {
     this.textSource$ = this.textSourceService.getOfferTextSource(this.offer!.id);
+    this.responses$ = this.responseService.getResponsesByOffer(this.offer!.id);
+    this.responses$.subscribe(responses => {
+      console.log('Responses changed:', responses);
+    });
     this.editableOffer = Object.assign({}, this.offer);
   }
 
@@ -143,5 +160,10 @@ export class OfferDetailComponent {
 
   pendingChanges(): boolean {
     return JSON.stringify(this.editableOffer) !== JSON.stringify(this.offer);
+  }
+
+    
+  getTextSourceForResponse(responseId: string): Observable<TextSource | undefined> {
+    return this.textSourceService.getOfferTextSource(responseId);
   }
 }
