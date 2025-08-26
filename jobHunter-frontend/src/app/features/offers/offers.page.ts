@@ -31,18 +31,34 @@ import { GlobalStateService } from '../../services/global-state.store';
     <input type="text" [formControl]="searchControl" placeholder="Search offers..." />
 
     <button (click)="sortByControl.setValue(undefined); filterByStatusControl.setValue('all'); searchControl.setValue('')">clear filters</button>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Company</th>
+          <th>Role</th>
+          <th>Recruiter</th>
+          <th>Skills</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
 
-    <div *ngFor="let offer of filteredOffers$ | async" >
-      {{offer.company}}
-      {{offer.role}}
-      {{offer.recruiter}}
-      {{offer.skills}}
-      {{offer.status}}
-      <button (click)="globalStateStore.openOfferDetail(offer)">view</button>
-      <button (click)="globalStateStore.openUpdateOffer(offer.id)">update</button>
-      <button (click)="offersService.deleteOffer(offer!.id);">delete</button>
-      <hr>
-    </div>
+      <tbody>
+        <tr *ngFor="let offer of filteredOffers$ | async">
+          <td>{{ offer.company }}</td>
+          <td>{{ offer.role }}</td>
+          <td>{{ offer.recruiter }}</td>
+          <td>{{ offer.skills }}</td>
+          <td>{{ offer.status }}</td>
+          <td>
+            <button (click)="globalStateStore.openOfferDetail(offer)">View</button>
+            <button (click)="globalStateStore.openUpdateOffer(offer.id)">Update</button>
+            <button (click)="offersService.deleteOffer(offer.id)">Delete</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
   `,
   styles: ``
 })

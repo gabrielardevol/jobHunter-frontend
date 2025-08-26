@@ -18,25 +18,75 @@ import { FormsModule } from '@angular/forms';
     <button (click)="offerService.deleteOffer(offer!.id); globalStateStore.openOfferDetail(undefined)">delete</button>
     <button (click)="globalStateStore.openOfferDetail(undefined)">close</button>
 
-    <h3>{{ offer!.company }} ({{ offer!.role }})</h3>
-    <select name="" id="" [(ngModel)]="offer!.status" (ngModelChange)="offerService.updateOffer(offer!.id, offer!)">
-      <option *ngFor="let state of environment.offerStates" value={{state}}>{{state}}</option>
-    </select>
-    <p>Status: {{ offer!.status }}</p>
-    <p>Hired: {{ offer!.hired ?? 'N/A' }}</p>
-    <p>Location: {{ offer!.location ?? 'N/A' }}</p>
-    <p>Recruiter: {{ offer!.recruiter ?? 'N/A' }}</p>
-    <p>Platform: {{ offer!.platform ?? 'N/A' }}</p>
-    <p>Payment Type: {{ offer!.paymentType }}</p>
-    <p>Salary: {{ offer!.salaryMinimum ?? 0 }} - {{ offer!.salaryMaximum ?? 0 }}</p>
-    <p>Weekly Hours: {{ offer!.weeklyHours ?? 0 }}</p>
-    <p>Duration (months): {{ offer!.durationMonths ?? 'N/A' }}</p>
-    <p>Experience: {{ offer!.experienceMinimum ?? 0 }} - {{ offer!.experienceMaximum ?? 0 }}</p>
+    <h3>{{ offer!.company }} ({{ offer!.role }})</h3>     
     <p>Created At: {{ offer!.createdAt | date:'medium' }}</p>
 
-    <div *ngIf="offer!.skills?.length">
-      <strong>Skills:</strong> {{ offer!.skills?.join(', ') }}
-    </div>
+    <p>status:<select name="" id="" [(ngModel)]="offer!.status" (ngModelChange)="offerService.updateOffer(offer!.id, offer!)">
+      <option *ngFor="let state of environment.offerStates" value={{state}}>{{state}}</option>
+    </select></p>  
+    
+      <label>
+        Location:
+        <input [(ngModel)]="offer.location" />
+      </label>
+
+      <label>
+        Recruiter:
+        <input [(ngModel)]="offer.recruiter" />
+      </label>
+
+      <label>
+        Platform:
+        <input [(ngModel)]="offer.platform" />
+      </label>
+
+      <legend>Payment Type</legend>
+
+      <label *ngFor="let t of  ['hour', 'day', 'month', 'year'];" style="margin-right: 1rem;">
+        <input
+          type="radio"
+          name="paymentType"
+          [value]="t"
+          [(ngModel)]="offer.paymentType"
+        />
+        {{ t }}
+      </label>
+
+      <label>
+        Salary Minimum:
+        <input type="number" [(ngModel)]="offer.salaryMinimum" />
+      </label>
+
+      <label>
+        Salary Maximum:
+        <input type="number" [(ngModel)]="offer.salaryMaximum" />
+      </label>
+
+    <label>
+      Weekly Hours:
+      <input type="number" [(ngModel)]="offer.weeklyHours" />
+    </label>
+    <label>
+      Duration (months):
+      <input type="number" [(ngModel)]="offer.durationMonths" />
+    </label>
+
+    <label>
+      Experience Minimum:
+      <input type="number" [(ngModel)]="offer.experienceMinimum" />
+    </label>
+
+    <label>
+      Experience Maximum:
+      <input type="number" [(ngModel)]="offer.experienceMaximum" />
+    </label>
+
+    <label>
+      Skills:
+      <input type="text" [(ngModel)]="offer.skills" placeholder="skill1, skill2, ..." />
+    </label>
+
+    <button (click)="offerService.updateOffer(offer!.id, offer!)">Save changes</button>
 
     <div *ngIf="offer!.responses?.length">
       <h4>Responses:</h4>
@@ -59,7 +109,7 @@ import { FormsModule } from '@angular/forms';
   </div>
 
   `,
-  styles: ``
+  styles: `label {display: block;}`
 })
 export class OfferDetailComponent {
   offer$: Observable<Offer | undefined>;
