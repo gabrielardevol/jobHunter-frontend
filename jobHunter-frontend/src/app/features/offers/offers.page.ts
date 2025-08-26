@@ -13,12 +13,17 @@ import { OfferDetailComponent } from './offer-detail.component';
   imports: [NgForOf, AsyncPipe, ReactiveFormsModule],
   template: `
 
+  <label>
+    Sort:
     <select [formControl]="sortByControl">
       <option [ngValue]="'company'">Company</option>
       <option [ngValue]="'createdAt'">Date</option>
       <option [ngValue]="'salaryMax'">Salary Max</option>
     </select>
+  </label>
 
+  <label>
+    Filter:
     <select [formControl]="filterByStatusControl">
       <option [ngValue]="'all'">All</option>
       <option [ngValue]="'waiting'">waiting</option>
@@ -28,37 +33,37 @@ import { OfferDetailComponent } from './offer-detail.component';
       <option [ngValue]="'contract'">contract</option>
       <option [ngValue]="'dumped'">dumped</option>
     </select>
+  </label>
 
-    <input type="text" [formControl]="searchControl" placeholder="Search offers..." />
+  <input type="text" [formControl]="searchControl" placeholder="Search offers..." />
 
-    <button (click)="sortByControl.setValue('createdAt'); filterByStatusControl.setValue('all'); searchControl.setValue('')">clear filters</button>
-    <table class="table">
-      <thead>
-        <tr>
-          <th>Company</th>
-          <th>Role</th>
-          <th>Recruiter</th>
-          <th>Skills</th>
-          <th>Status</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
+  <button (click)="sortByControl.setValue('createdAt'); filterByStatusControl.setValue('all'); searchControl.setValue('')">clear filters</button>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Company</th>
+        <th>Role</th>
+        <th>Recruiter</th>
+        <th>Skills</th>
+        <th>Status</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
 
-      <tbody>
-        <tr *ngFor="let offer of filteredOffers$ | async">
-          <td>{{ offer.company }}</td>
-          <td>{{ offer.role }}</td>
-          <td>{{ offer.recruiter }}</td>
-          <td>{{ offer.skills }}</td>
-          <td>{{ offer.status }}</td>
-          <td>
-            <button (click)="openDetails(offer)">View</button>
-            <button (click)="offersService.deleteOffer(offer.id)">Delete</button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-
+    <tbody>
+      <tr *ngFor="let offer of filteredOffers$ | async">
+        <td>{{ offer.company }}</td>
+        <td>{{ offer.role }}</td>
+        <td>{{ offer.recruiter }}</td>
+        <td>{{ offer.skills }}</td>
+        <td>{{ offer.status }}</td>
+        <td>
+          <button (click)="openDetails(offer)">View</button>
+          <button (click)="offersService.deleteOffer(offer.id)">Delete</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
   `,
   styles: ``
 })
@@ -77,36 +82,40 @@ export class OffersPage {
       this.searchControl.valueChanges.pipe(startWith(this.searchControl.value))
     ]).pipe(
       map(([offers, sortBy, filterStatus, search]) => {
-        let result = [...offers];
-
-        if (filterStatus !== 'all') {
-          result = result.filter(o => o.status == filterStatus);
-        }
-
-        if (search?.trim()) {
-          const searchLower = search.toLowerCase();
-          result = result.filter(o =>
-            o.company.toLowerCase().includes(searchLower) ||
-            o.role.toLowerCase().includes(searchLower)
-          );
-        }
-
-        if (sortBy) {
-          result.sort((a, b) => {
-            if (sortBy === 'company') return a.company.localeCompare(b.company);
-            if (sortBy === 'createdAt') return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
-            if (sortBy === 'salaryMax') return (a.salaryMaximum ?? 0) - (b.salaryMaximum ?? 0);
-            return 0;
-          });
-        }
-
-        return result;
+        let result = this.filterOffers(offers, filterStatus!, search!);
+        return this.sortOffers(result, sortBy!);
       })
     );    
   }
 
   openDetails(offer: Offer) {
-    console.log("openDetails" , offer)
     this.modalService.open(OfferDetailComponent,  { offer: offer })
-}
+  }
+
+  private filterOffers(offers: Offer[], filterStatus: string, search: string): Offer[] {
+    let result = [...offers];
+    if (filterStatus !== 'all') {
+      result = result.filter(o => o.status === filterStatus);
+    }
+    if (search?.trim()) {
+      const searchLower = search.toLowerCase();
+      result = result.filter(o =>
+        o.company.toLowerCase().includes(searchLower) ||
+        o.role.toLowerCase().includes(searchLower)
+      );
+    }
+    return result;
+  }
+
+  private sortOffers(offers: Offer[], sortBy: string | undefined): Offer[] {
+    if (!sortBy) return offers;
+    return [...offers].sort((a, b) => {
+      switch (sortBy) {
+        case 'company': return a.company.localeCompare(b.company);
+        case 'createdAt': return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+        case 'salaryMax': return (a.salaryMaximum ?? 0) - (b.salaryMaximum ?? 0);
+        default: return 0;
+      }
+    });
+  }
 }
