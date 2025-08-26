@@ -14,7 +14,6 @@ import { FormsModule } from '@angular/forms';
   template: `
 
   <div *ngIf="offer$ | async as offer">
-    <button (click)="globalStateStore.openUpdateOffer(offer!.id)">update</button>
     <button (click)="offerService.deleteOffer(offer!.id); globalStateStore.openOfferDetail(undefined)">delete</button>
     <button (click)="globalStateStore.openOfferDetail(undefined)">close</button>
 

@@ -31,7 +31,9 @@ export class LlmService {
       messages: [{
         ...this.body.messages[0],
         content: this.bodyContentBase + this.offerInterface
-        + `. Text source is:` 
+        + `. Considerate that software engineer equals Fullstack unless Frontend or Backend is specified.
+        Considerate that recruiter must be a person's name, not generic tags like 'recruiter' or 'técnico de selección'
+.        Text source is:` 
         + offerText 
         + `. An example of desired output is: ` 
         + this.offerExample
