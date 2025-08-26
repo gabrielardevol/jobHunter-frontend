@@ -14,7 +14,7 @@ import { v4 as uuidv4 } from 'uuid';
   selector: 'app-offer-form',
   imports: [ReactiveFormsModule, CommonModule , AsyncPipe],
   template: `
-    <input *ngIf="!(offerId$ | async)" [formControl]="llmControl" placeholder="Type something..." />
+    <input [formControl]="llmControl" placeholder="Type something..." />
 
     <form [formGroup]="offerForm" (ngSubmit)="onSubmit()"> 
     
@@ -44,9 +44,9 @@ import { v4 as uuidv4 } from 'uuid';
       <input formControlName="experienceMinimum" type="number" placeholder="Min experience" />
       <input formControlName="experienceMaximum" type="number" placeholder="Max experience" />
 
-      <button type="button" (click)="globalStateStore.closeUpdateOffer(); closeCreateOffer.emit()">Cancel</button>
+      <button type="button" (click)="closeCreateOffer.emit()">Cancel</button>
       <button [disabled]="!offerForm.valid" type="submit">
-        {{ (offerId$ | async) ? 'Update Offer' : 'Create Offer'}}
+        Create Offer
       </button>
     </form>
     <hr>
@@ -56,7 +56,6 @@ import { v4 as uuidv4 } from 'uuid';
 })
 export class OfferFormComponent {
   @Output() closeCreateOffer = new EventEmitter<any>;
-  offerId$: Observable<string | undefined>; //used as 'update'
   offerForm: FormGroup;
   llmControl: FormControl = new FormControl;
   textSource$: Observable<string> = this.llmControl.valueChanges.pipe(
@@ -81,22 +80,9 @@ export class OfferFormComponent {
       experienceMaximum: [0, Validators.min(0)],
     });
 
-    this.offerId$ = globalStateStore.updatingOffer$;
   }
 
   ngOnInit(): void {
-
-    this.offerId$
-    .pipe(
-      switchMap(id => id ? this.offersService.getOffer(id) : of(undefined)),
-      takeUntilDestroyed(this.destroyRef)
-    )
-    .subscribe(res => {
-      this.offerForm.reset();
-      if (res) {
-        this.offerForm.patchValue(res);
-      }
-    });
 
     this.textSource$
     .pipe(
@@ -109,20 +95,12 @@ export class OfferFormComponent {
   }
 
   onSubmit() {
-    this.offerId$.pipe(take(1)).subscribe(offerId => {
-      if (offerId) {
-        this.offersService.updateOffer(offerId, this.offerForm.value);
-      } else {
-        this.offersService.addOffer(this.offerForm.value);
-        this.textSourceService.addTextSource({
-          content: this.llmControl.value, 
-          entityId: this.offerForm.value.id 
-        })
-      }
-      this.offerForm.reset();
-    });
-
-    this.globalStateStore.closeUpdateOffer();
+ 
+    this.offersService.addOffer(this.offerForm.value);
+    this.textSourceService.addTextSource({
+      content: this.llmControl.value, 
+      entityId: this.offerForm.value.id });
+       
     this.llmControl.reset();
   }
 }
