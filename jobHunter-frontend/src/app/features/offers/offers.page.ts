@@ -31,7 +31,7 @@ import { OfferDetailComponent } from './offer-detail.component';
 
     <input type="text" [formControl]="searchControl" placeholder="Search offers..." />
 
-    <button (click)="sortByControl.setValue(undefined); filterByStatusControl.setValue('all'); searchControl.setValue('')">clear filters</button>
+    <button (click)="sortByControl.setValue('createdAt'); filterByStatusControl.setValue('all'); searchControl.setValue('')">clear filters</button>
     <table class="table">
       <thead>
         <tr>
