@@ -34,10 +34,10 @@ import { CommentsService } from '../../services/comments.service';
 })
 
 export class CommentFormComponent {
-  @Input() offerId?: string;
+  @Input() offerId!: string;
   @Input() responseId?: string;
   commentForm: FormGroup;
-  comments$: Observable<Comment[]>;
+  comments$?: Observable<Comment[]>;
 
   constructor(
     private fb: FormBuilder,
@@ -46,17 +46,25 @@ export class CommentFormComponent {
 
     // form
     this.commentForm = this.fb.group({
-      id: uuidv4(),
       content: ['', Validators.required],
-      createdAt: [new Date()]
+      offerId: this.offerId,
     });
 
+   
+  }
+
+  ngOnInit(){
     // comment list
-    this.comments$ = this.offerId ?  commentsService.getCommentsByOffer(this.offerId) : commentsService.getCommentsByOffer(this.responseId!) 
+    console.log('ngoninit', this.offerId)
+    this.comments$ = this.commentsService.getCommentsByOffer(this.offerId)
+
   }
 
   onSubmit() {
-    this.commentsService.addComment(this.commentForm.value.content);
+    this.commentForm.value.offerId = this.offerId
+        console.log(this.commentForm.value)
+
+    this.commentsService.addComment(this.commentForm.value);
     this.commentForm.reset();
   }
 

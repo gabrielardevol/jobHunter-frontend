@@ -3,7 +3,7 @@ import { BehaviorSubject, map, Observable, take } from 'rxjs';
 import { v4 as uuidv4 } from 'uuid';
 import { Offer, Response } from '../models/models';
 import { SnackbarService } from './snackbars.service';
-import { ResponsesRepository } from './responses.repository';
+import { ResponsesRepository } from '../repositories/responses.repository';
 import { OffersService } from './offers.service';
 
 @Injectable({

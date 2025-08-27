@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, map, Observable, of, tap } from 'rxjs';
+import { BehaviorSubject, catchError, map, Observable, of, tap, throwError, timeout } from 'rxjs';
 import { Offer } from '../models/models';
 import { environment } from '../../environments/environment';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { SnackbarService } from './snackbars.service';
 
 @Injectable({
   providedIn: 'root'
@@ -22,7 +23,9 @@ export class LlmService {
   };
 
 
-  constructor(public httpClient: HttpClient) {
+  constructor(public httpClient: HttpClient,
+    public snackbarService: SnackbarService
+  ) {
   }
   
   promptOffer(offerText: string):  Observable<Partial<Offer>> {
@@ -41,13 +44,21 @@ export class LlmService {
         }
       ]
     } 
-    return this.httpClient.post<any>(environment.apiUrl, 
-    body, 
-    { headers }
-    ).pipe(
-//      tap(response => console.log('server response:', response.choices[0].message.content)),
-      tap(response => console.log('server response regex:', response.choices[0].message.content.match(/{[\s\S]*}/))),
-      map(response => JSON.parse(response.choices[0].message.content.match(/{[\s\S]*}/))))
+    return this.httpClient.post<any>(environment.apiUrl, body, { headers }).pipe(
+      timeout(6000), // ⏳ llença error si passen més de 6s
+      map(response => {
+        const match = response.choices[0].message.content.match(/{[\s\S]*}/);
+        if (!match) throw new Error('No JSON object found in response');
+        return JSON.parse(match[0]) as Partial<Offer>; // 🔒 força el tipatge
+      }),
+      catchError(err => {
+        console.error('error with autofill:', err);
+        this.snackbarService.addSnackbar({
+          message: 'error with autofill',
+        });
+        return throwError(() => err);
+      })
+    );
   }
   
   promptResponse(responseText: string): Observable<Partial<Response>> {
@@ -68,10 +79,17 @@ export class LlmService {
     body, 
     { headers }
     ).pipe(
-//      tap(response => console.log('server response:', response.choices[0].message.content)),
+      timeout(6000),
       tap(response => console.log('server response regex:', response.choices[0].message.content.match(/{[\s\S]*}/))),
-      map(response => JSON.parse(response.choices[0].message.content.match(/{[\s\S]*}/))))
-
+      map(response => JSON.parse(response.choices[0].message.content.match(/{[\s\S]*}/))),
+      catchError(err => {
+        console.error('error with autofill:', err);
+        this.snackbarService.addSnackbar({
+          message: 'error with autofill',
+        });
+        return throwError(() => err);
+      })
+    )
   }
   
   bodyContentBase: string = `

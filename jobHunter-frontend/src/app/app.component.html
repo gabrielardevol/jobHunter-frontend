@@ -1,34 +1,38 @@
-<nav style="border-bottom: 1px solid black">jobHunter</nav>
+<div style="min-height: 100vh; display: flex; flex-flow: column;">
 
-<div style="display: flex;">
-  <!-- MENU -->
-  <aside style="border-right: 1px solid black">
-    <ul>
-      <li><a routerLink="/dashboard">Dashboard</a></li>
-      <li><a routerLink="/offers">Offers</a></li>
-      <li><a routerLink="/calendar">Calendar</a></li>
-    </ul>
-    <button (click)="openOfferForm()">new offer</button>
-    <button  (click)="openResponseForm()">new response</button>
-  </aside>
-
-  <main>
-     <!-- MODAL -->
-    <ng-template #modalHost></ng-template>
-    <div class="modal-backdrop" *ngIf="modalData">
-    </div>
-
-    <!-- ROUTER OUTLET -->
-    <router-outlet></router-outlet>
-
-    <!-- SNACKBARS -->
-    <div *ngFor="let snack of snackbarService.snackbars$ | async">
-      <span>{{ snack.message }}</span>
-      <button *ngIf="snack.action" (click)="snack.action(); snackbarService.removeSnackbar(snack.id!)">
-        Undo
-      </button>
-      <button (click)="snackbarService.removeSnackbar(snack.id!)">X</button>
-    </div>
-  </main>
-
-</div> 
+  <nav style="border-bottom: 1px solid black">jobHunter</nav>
+  
+  <div style="display: flex; flex: 1 ">
+    <!-- MENU -->
+    <aside style="border-right: 1px solid black">
+      <ul>
+        <li><a routerLink="/dashboard">Dashboard</a></li>
+        <li><a routerLink="/offers">Offers</a></li>
+        <li><a routerLink="/responses">Responses</a></li>
+        <li><a routerLink="/calendar">Calendar</a></li>
+      </ul>
+      <button (click)="openOfferForm()">new offer</button>
+      <button  (click)="openResponseForm()">new response</button>
+    </aside>
+  
+    <main style="flex: 1">
+       <!-- MODAL -->
+      <ng-template #modalHost></ng-template>
+      <div class="modal-backdrop" style="border-bottom: 1px solid black" *ngIf="modalData">
+      </div>
+  
+      <!-- ROUTER OUTLET -->
+      <router-outlet></router-outlet>
+  
+      <!-- SNACKBARS -->
+      <div *ngFor="let snack of snackbarService.snackbars$ | async">
+        <span>{{ snack.message }}</span>
+        <button *ngIf="snack.action" (click)="snack.action(); snackbarService.removeSnackbar(snack.id!)">
+          Undo
+        </button>
+        <button (click)="snackbarService.removeSnackbar(snack.id!)">X</button>
+      </div>
+    </main>
+  
+  </div> 
+</div>

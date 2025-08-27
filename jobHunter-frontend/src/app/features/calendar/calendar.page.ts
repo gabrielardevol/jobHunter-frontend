@@ -23,6 +23,13 @@ import { CommonModule } from '@angular/common';
     </div>
   `,
   styles: [`
+
+    :host {
+        height: 100%;
+        display: flex!important;
+        flex-flow: column;
+      }
+
     .calendar-header {
       display: flex;
       justify-content: space-between;
@@ -31,8 +38,10 @@ import { CommonModule } from '@angular/common';
       font-weight: bold;
     }
     .calendar-grid {
+      flex: 1;
+      width: 100%;
       display: grid;
-      grid-template-columns: repeat(7, 40px);
+      grid-template-columns: repeat(7, 1fr);
       gap: 5px;
     }
     .calendar-day {
@@ -40,8 +49,6 @@ import { CommonModule } from '@angular/common';
       font-weight: bold;
     }
     .calendar-cell {
-      width: 40px;
-      height: 40px;
       text-align: center;
       line-height: 40px;
       border-radius: 4px;

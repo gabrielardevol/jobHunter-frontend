@@ -2,7 +2,7 @@ import { Component, DestroyRef } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 import { OffersService } from '../services/offers.service';
-import { debounceTime, filter, Observable, switchMap, tap } from 'rxjs';
+import { catchError, debounceTime, filter, Observable, switchMap, tap, throwError } from 'rxjs';
 import { LlmService } from '../services/llm.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
@@ -117,6 +117,10 @@ export class OfferFormComponent {
       tap(parsed => { 
         this.offerForm.patchValue(parsed);
         this.isLoading = false;
+      }),
+      catchError(err => {
+        this.isLoading = false;
+        return throwError(() => err)
       })
     ).subscribe();
   }

@@ -3,7 +3,7 @@ import { BehaviorSubject, map, Observable } from 'rxjs';
 import { TextSource } from '../models/models';
 import { v4 as uuidv4 } from 'uuid';
 import { environment } from '../../environments/environment.development';
-import { TextSourcesRepository } from './textSources.repository';
+import { TextSourcesRepository } from '../repositories/textSources.repository';
 
 @Injectable({
   providedIn: 'root'

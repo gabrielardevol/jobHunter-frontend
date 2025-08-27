@@ -2,7 +2,7 @@ import { Component, DestroyRef } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { combineLatest, debounceTime, filter, map, Observable, startWith, switchMap, tap } from 'rxjs';
+import { catchError, combineLatest, debounceTime, filter, map, Observable, startWith, switchMap, tap, throwError } from 'rxjs';
 import { v4 as uuidv4 } from 'uuid';
 import { ResponsesService } from '../services/responses.service';
 import { LlmService } from '../services/llm.service';
@@ -31,6 +31,21 @@ import { TextSourceService } from '../services/textSources.service';
       <option value="contract">Contract</option>
       <option value="rejection">Rejection</option>
     </select>
+  </label>
+
+  <label>
+    Recruiter:
+    <input formControlName="recruiter" type="text" />
+  </label>
+  
+  <label>
+    Email:
+    <input formControlName="email" type="text" />
+  </label>
+  
+  <label>
+    Telephone:
+    <input formControlName="telephone" type="text" />
   </label>
 
   <label>
@@ -79,7 +94,16 @@ export class ResponseFormComponent {
         [...offers].sort(
           (a, b) => this.similarity(b.company ?? '', company) - this.similarity(a.company ?? '', company)
         )
-      )
+      ),
+      tap(sortedOffers => {
+        const companyValue = companyControl!.value;
+        if (companyValue && companyValue.trim() !== '') {
+          const firstOffer = sortedOffers[0];
+          if (firstOffer) {
+            this.responseForm.get('offerId')?.setValue(firstOffer.id, { emitEvent: false });
+          }
+        }
+      })
     );
   }
 
@@ -93,6 +117,10 @@ export class ResponseFormComponent {
       tap(parsed => {
         this.responseForm.patchValue(parsed);
         this.isLoading = false;
+      }),
+      catchError(err => {
+        this.isLoading = false;
+        return throwError(() => err)
       })
     ).subscribe();
   }
@@ -120,6 +148,9 @@ export class ResponseFormComponent {
       type: ['', Validators.required],
       date: [undefined],
       company: [''],
+      email:  [''],
+      telephone:  [''],
+      recruiter: [''],
       offerId: ['', Validators.required]
     }, { validators: this.dateRequiredIfNeeded });
   }

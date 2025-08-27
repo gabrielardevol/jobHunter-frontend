@@ -3,7 +3,7 @@ import { BehaviorSubject, map, Observable } from 'rxjs';
 import { v4 as uuidv4 } from 'uuid';
 import { Comment } from '../models/models';
 import { SnackbarService } from './snackbars.service';
-import { CommentsRepository } from './comments.repository';
+import { CommentsRepository } from '../repositories/comments.repository';
 
 @Injectable({
   providedIn: 'root'
@@ -29,14 +29,13 @@ export class CommentsService {
     this.commentsSubject.next(allComments);
   }
 
-  async addComment(content: string) {
-    const newComment: Comment = {
-      id: uuidv4(),
-      createdAt: new Date(),
-      content
-    };
+  async addComment(comment: Comment) {
+    console.log("adding comment,",  comment)
 
-    await this.commentsRepo.save(newComment);
+    comment.id = uuidv4();
+    comment.createdAt = new Date();
+
+    await this.commentsRepo.save(comment);
     await this.refreshComments();
 
     this.snackbarService.addSnackbar({
@@ -79,6 +78,8 @@ getCommentsByResponse(responseId: string): Observable<Comment[]> {
 }
 
 getCommentsByOffer(offerId: string): Observable<Comment[]> {
+
+  console.log('getting comments', offerId)
   return this.comments$.pipe(
     map(comments => 
       comments
