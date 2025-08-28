@@ -60,7 +60,7 @@ import { OfferDetailComponent } from './offer-detail.component';
         <td>{{ response.date }}</td>
         <td>{{ response.createdAt }}</td>
         <td>
-          <button (click)="openDetails(response.offer)">View</button>
+          <button (click)="offersService.openDetails(response.offer.id)">View</button>
           <button (click)="responsesService.deleteResponse(response.id)">Delete</button>
         </td>
       </tr>
@@ -79,7 +79,6 @@ export class ResponsesPage {
 
   constructor(
     public responsesService: ResponsesService,
-    public modalService: ModalService,
     public offersService: OffersService
   ) {
    this.filteredResponses$ = combineLatest([
@@ -108,11 +107,6 @@ export class ResponsesPage {
     this.filterByTypeControl.setValue('all');
     this.searchControl.setValue('');
   }
-
-  openDetails(offer: Offer) {
-    this.modalService.open(OfferDetailComponent,  { offer: offer })
-  }
-
 
   private filterResponses(responses: Response[], filterType: tResponseType | 'all', search: string): Response[] {
     let result = [...responses];

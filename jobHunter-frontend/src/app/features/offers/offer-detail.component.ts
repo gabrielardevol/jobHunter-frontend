@@ -83,20 +83,21 @@ import { CommentFormComponent } from "./comment-form.component";
       </summary>     
       <p *ngIf="textSource$ | async as textSource">{{textSource!.content}}</p>
     </details>
-                  
-    <details>
-      <summary>
-        Responses
-      </summary> 
-      <ng-container *ngFor="let response of responses$ | async">
-        {{ response.type }} | {{ response.createdAt | date:'short' }}
-       
-        <ng-container *ngIf="textSourceService.getResponseTextSource(response.id) | async as textSource">
-          <p>{{ textSource.content }}</p>
-        </ng-container>
-        <hr>   
-      </ng-container>  
-    </details>
+    <ng-container *ngIf="responses$ | async as responses">
+      <details *ngIf="responses.length > 0">
+        <summary>
+          Responses
+        </summary> 
+        <ng-container *ngFor="let response of responses$ | async">
+          {{ response.type }} | {{ response.createdAt | date:'short' }}
+        
+          <ng-container *ngIf="textSourceService.getResponseTextSource(response.id) | async as textSource">
+            <p>{{ textSource.content }}</p>
+          </ng-container>
+          <hr>   
+        </ng-container>  
+      </details>
+    </ng-container>
     
     <app-comment-form [offerId]="offer.id"></app-comment-form>
   `,
@@ -114,8 +115,8 @@ export class OfferDetailComponent {
   constructor(
     public offerService: OffersService,
     public textSourceService: TextSourceService,
-    public modalService: ModalService,
-    public responseService: ResponsesService
+    public responseService: ResponsesService,
+    public modalService: ModalService
   ) {
   }
   

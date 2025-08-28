@@ -81,7 +81,6 @@ export class ResponsesService {
     const response = await this.responsesRepo.getById(id);
     if (!response) return;
 
-    // si vols soft-delete:
     (response as any).deletedAt = new Date();
     await this.responsesRepo.save(response);
     await this.refreshResponses();
@@ -105,27 +104,37 @@ export class ResponsesService {
     });
   }
 
-getResponses(responseId: string): Observable<Response[] | undefined> {
-  console.log("getting responses...");
-  return this.responses$.pipe(
-    map(responses =>
-      responses
-        .filter(r => r.id === responseId)
-        .sort((a, b) => (a.createdAt?.getTime() ?? 0) - (b.createdAt?.getTime() ?? 0))
-    )
-  );
-}
+  getResponse(responseId: string): Observable<Response[] | undefined> {
+    console.log("getting responses...");
+    return this.responses$.pipe(
+      map(responses =>
+        responses
+          .filter(r => r.id === responseId)
+          .sort((a, b) => (a.createdAt?.getTime() ?? 0) - (b.createdAt?.getTime() ?? 0))
+      )
+    );
+  }
 
-getResponsesByOffer(offerId: string): Observable<Response[]> {
-  console.log("getting responses for offer", offerId);
-  return this.responses$.pipe(
-    map(responses =>
-      responses
-        .filter(r => r.offerId === offerId)
-        .sort((a, b) => (a.createdAt?.getTime() ?? 0) - (b.createdAt?.getTime() ?? 0))
-    )
-  );
-}
+  getAllResponses(): Observable<Response[]> {
+    console.log("getting all responses...");
+    return this.responses$.pipe(
+      map(responses =>
+        [...responses].sort(
+          (a, b) => (a.createdAt?.getTime() ?? 0) - (b.createdAt?.getTime() ?? 0)
+        )
+      )
+    );
+  }
 
- 
+
+  getResponsesByOffer(offerId: string): Observable<Response[]> {
+    console.log("getting responses for offer", offerId);
+    return this.responses$.pipe(
+      map(responses =>
+        responses
+          .filter(r => r.offerId === offerId)
+          .sort((a, b) => (a.createdAt?.getTime() ?? 0) - (b.createdAt?.getTime() ?? 0))
+      )
+    );
+  }
 }

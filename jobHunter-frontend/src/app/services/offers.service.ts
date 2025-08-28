@@ -1,9 +1,11 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, map, Observable } from 'rxjs';
+import { BehaviorSubject, map, Observable, tap } from 'rxjs';
 import { v4 as uuidv4 } from 'uuid';
 import { Offer } from '../models/models';
 import { SnackbarService } from './snackbars.service';
 import { OffersRepository } from '../repositories/offers.repository';
+import { ModalService } from './modals.service';
+import { OfferDetailComponent } from '../features/offers/offer-detail.component';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +16,8 @@ export class OffersService {
 
   constructor(
     private snackbarService: SnackbarService,
-    private offersRepo: OffersRepository
+    private offersRepo: OffersRepository,
+    private modalService: ModalService
   ) {
     this.init();
   }
@@ -84,5 +87,13 @@ export class OffersService {
     return this.offers$.pipe(
       map(offers => offers.find(o => o.id === offerId))
     );
+  }
+
+  openDetails(offerId: string){
+    console.log("opening details from service, id:", offerId)
+    this.offers$.pipe(
+      map(offers => offers.find(o => o.id === offerId)),
+      tap(offer=> this.modalService.open(OfferDetailComponent,  { offer: offer }))
+    ).subscribe();
   }
 }

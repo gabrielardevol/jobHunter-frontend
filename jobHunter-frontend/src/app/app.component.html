@@ -1,10 +1,10 @@
-<div style="min-height: 100vh; display: flex; flex-flow: column;">
+<div style="height: 100vh; display: flex; flex-flow: column; overflow: hidden;">
 
   <nav style="border-bottom: 1px solid black">jobHunter</nav>
   
-  <div style="display: flex; flex: 1 ">
+  <div style="display: flex; flex: 1; overflow: auto">
     <!-- MENU -->
-    <aside style="border-right: 1px solid black">
+    <aside style="border-right: 1px solid black; position: sticky; top: 0;">
       <ul>
         <li><a routerLink="/dashboard">Dashboard</a></li>
         <li><a routerLink="/offers">Offers</a></li>
@@ -15,7 +15,7 @@
       <button  (click)="openResponseForm()">new response</button>
     </aside>
   
-    <main style="flex: 1">
+    <main style="flex: 1; height: fit-content">
        <!-- MODAL -->
       <ng-template #modalHost></ng-template>
       <div class="modal-backdrop" style="border-bottom: 1px solid black" *ngIf="modalData">

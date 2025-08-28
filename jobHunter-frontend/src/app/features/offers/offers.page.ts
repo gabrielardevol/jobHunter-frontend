@@ -58,7 +58,7 @@ import { OfferDetailComponent } from './offer-detail.component';
         <td>{{ offer.skills }}</td>
         <td>{{ offer.status }}</td>
         <td>
-          <button (click)="openDetails(offer)">View</button>
+          <button (click)="offersService.openDetails(offer.id)">View</button>
           <button (click)="offersService.deleteOffer(offer.id)">Delete</button>
         </td>
       </tr>
@@ -86,10 +86,6 @@ export class OffersPage {
         return this.sortOffers(result, sortBy!);
       })
     );    
-  }
-
-  openDetails(offer: Offer) {
-    this.modalService.open(OfferDetailComponent,  { offer: offer })
   }
 
   private filterOffers(offers: Offer[], filterStatus: string, search: string): Offer[] {
